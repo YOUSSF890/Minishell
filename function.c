@@ -64,9 +64,8 @@ void ft_pips(char *input, int *i, t_list **lst)
     (*i)++;
 }
 
-void ft_handle1(char *input,int *i,t_handel *handel)
+int ft_handle1(char *input,int *i,t_handel *handel)
 {
-    // handel->a = *i;
     if (input[handel->a] == '\"' && input[*i] == '\"')
         (handel->quote_count)++;
     if (input[handel->a] == '\'' && input[*i] == '\'')
@@ -77,28 +76,35 @@ void ft_handle1(char *input,int *i,t_handel *handel)
             break ;
         handel->temp[(handel->t)++] = input[*i];
         (*i)++;
-        if (!input[*i]) // break; دشي علاش مع توصل \0 دير  "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
+        if (!input[*i]) // break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
         {
             printf("eroor\n");
-            break;
+            return(0);
         }
     }
+    return(1);
 }
 
 void ft_handle3(char *input,int *i,t_handel *handel)
 {
     if (((input[*i] == '\"') || input[*i] == '\'') && input[*i])
     {
-        handel->a = *i;
         handel->temp[(handel->t)++] = input[*i];
         (*i)++;
         if(input[*i]) //  echo "$HOME$"$"youssef"    input[*i] = '\0'  او هدي *i++ حيت هدي نزيد ب
         {
+            handel->a = *i;
             if(input[handel->a] == '\"')
-                (handel->quote_count)++;
+            {
+                handel->quote_count = 1;
+                // (handel->quote_count)++;
+            }
             else if(input[handel->a] == '\'')
-                (handel->q)++;
-            else
+            {
+                handel->q = 1;
+                // (handel->q)++;
+            }
+            else if(input[*i] != ' ' && input[*i])
             {
                 handel->temp[(handel->t)++] = input[(*i)++];
                 handel->quote_count = 1;
@@ -106,6 +112,10 @@ void ft_handle3(char *input,int *i,t_handel *handel)
                 handel->a = *i;
             }
         }
+    }
+    else
+    {
+        handel->temp[(handel->t)++] = input[(*i)++];
     }
 }
 
@@ -142,14 +152,16 @@ t_handel *ft_lstnew_handl(int i)
     new_node->next = NULL;
     return new_node;
 }
-void ft_handle_double_single(char *input, int *i, t_list **lst)
+int ft_handle_double_single(char *input, int *i, t_list **lst)
 {
     t_handel *handel;
     handel = ft_lstnew_handl(*i);
-    handel->temp = malloc(sizeof(char) * (ft_handle2(input, *i, handel) + 1));
+    // handel->temp = malloc(sizeof(char) * (ft_handle2(input, *i, handel) + 1));
+    handel->a = *i;
     while(input[*i])
     {
-        ft_handle1(input,i,handel);
+        if(!ft_handle1(input,i,handel))
+            return(0);
         ft_handle3(input,i,handel);
         if ((input[*i] == ' ' || input[*i] == '|' || input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
         {
@@ -162,80 +174,87 @@ void ft_handle_double_single(char *input, int *i, t_list **lst)
     }
     handel->temp[handel->t] = '\0';
     ft_lstadd_back(lst, ft_lstnew(handel->temp));
+    return(1);
 }
 
 
-// void ft_handle_string(char *input, int *i, t_list **lst)
-// {
-//     // char *temp;
-//     t_handel *handel;
-//     handel = ft_lstnew_handl(*i);
-//     handel->temp = malloc(sizeof(char) * (100 + 1));
-
-//     while (input[*i] && input[*i] != ' ' && input[*i] != '|' && input[*i] != '>' && input[*i] != '<')
-//     {
-//         if(input[*i] == '\"' || input[*i] == '\'')
-//         {
-//             handel->a = *i;
-//             while(input[*i])
-//             {
-//                 ft_handle1(input,i,handel);
-//                 ft_handle3(input,i,handel);
-//                 if ((input[*i] == ' ' || input[*i] == '|' || input[*i] == '>'
-//                     || input[*i] == '<' || input[*i] == '\0'))
-//                 {
-//                     if(input[*i] == '\0') // باش متبداش تقرة لية من مور '\0'
-//                         ;
-//                     else
-//                         (*i)++;
-//                     break ;
-//                 }
-//             }
-//         }
-//         else
-//         {
-//             handel->temp[(handel->t)++] = input[*i];
-//             (*i)++;
-//         }
-//         if(input[*i - 1] == '\0' || input[*i - 1] == ' ')
-//             break ;
-//     }
-//     handel->temp[handel->t] = '\0';
-//     ft_lstadd_back(lst, ft_lstnew(handel->temp));
-// }
-
-void ft_handle_string(char *input, int *i, t_list **lst)
+int ft_handle_string(char *input, int *i, t_list **lst)
 {
-    int a = 0;
-    int quote_count = 0;
-    char temp[100];
+    t_handel *handel;
+    handel = ft_lstnew_handl(*i);
+    // handel->temp = malloc(sizeof(char) * (100 + 1));
 
     while (input[*i] && input[*i] != ' ' && input[*i] != '|' && input[*i] != '>' && input[*i] != '<')
     {
         if(input[*i] == '\"' || input[*i] == '\'')
         {
+            handel->a = *i;
             while(input[*i])
             {
-                if(input[*i] == '\"')
-                    quote_count++;
-                if(quote_count % 2 == 0 && (input[*i+1] == '|' || input[*i+1] == '>' || input[*i+1] == '<' || input[*i+1] == ' '))
+                if(!ft_handle11(input,i,handel))
+                    return(0);
+                ft_handle33(input,i,handel);
+                if ((input[*i] == ' ' || input[*i] == '|' || input[*i] == '>'
+                    || input[*i] == '<' || input[*i] == '\0'))
                 {
-                    temp[a] = input[*i];
-                    a++;
-                    (*i)++;
-                    break;
+                    if(input[*i] == '\0') // باش متبداش تقرة لية من مور '\0'
+                        ;
+                    else
+                        (*i)++;
+                    break ;
                 }
-                temp[a] = input[*i];
-                a++;
-                (*i)++;
             }
         }
         else
-        {
-            temp[a++] = input[*i];
-            (*i)++;
-        }
+
+            handel->temp[(handel->t)++] = input[(*i)++];
+        if(input[*i - 1] == '\0' || input[*i - 1] == ' ')
+            break ;
     }
-    temp[a] = '\0';
-    ft_lstadd_back(lst, ft_lstnew(temp));
+    handel->temp[handel->t] = '\0';
+    ft_lstadd_back(lst, ft_lstnew(handel->temp));
+    return(1);
 }
+
+
+
+
+
+
+
+
+// void ft_handle_string(char *input, int *i, t_list **lst)
+// {
+//     int a = 0;
+//     int quote_count = 0;
+//     char temp[100];
+
+//     while (input[*i] && input[*i] != ' ' && input[*i] != '|' && input[*i] != '>' && input[*i] != '<')
+//     {
+//         if(input[*i] == '\"' || input[*i] == '\'')
+//         {
+//             while(input[*i])
+//             {
+//                 if(input[*i] == '\"')
+//                     quote_count++;
+//                 if(quote_count % 2 == 0 && (input[*i+1] == '|' || input[*i+1] == '>' || input[*i+1] == '<' || input[*i+1] == ' '))
+//                 {
+//                     temp[a] = input[*i];
+//                     a++;
+//                     (*i)++;
+//                     break;
+//                 }
+//                 temp[a] = input[*i];
+//                 a++;
+//                 (*i)++;
+//             }
+//         }
+//         else
+//         {
+//             temp[a++] = input[*i];
+//             (*i)++;
+//         }
+//     }
+//     temp[a] = '\0';
+//     ft_lstadd_back(lst, ft_lstnew(temp));
+// }

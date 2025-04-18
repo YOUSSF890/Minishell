@@ -1,41 +1,40 @@
 #include "minishell.h"
 
-t_list *ft_fun(char *input)
+int ft_fun(char *input,t_list **lst)
 {
     int i;
-    t_list *lst;
 
     i = 0;
-    lst = NULL;
     while (input[i])
     {
         while (input[i] && input[i] != ' ')
         {
             if (input[i] == '|' || input[i] == '<' || input[i] == '>')
-                ft_pips(input, &i, &lst);
+                ft_pips(input, &i, lst);
             else if (input[i] == '\"' || input[i] == '\'')
-                ft_handle_double_single(input, &i, &lst);
+            {
+                if(!ft_handle_double_single(input, &i, lst))
+                    return(0);
+            }
             else
-                ft_handle_string(input, &i, &lst);
+            {
+                if(!ft_handle_string(input, &i, lst))
+                    return(0);
+            }
         }
         if (input[i] == ' ')
             i++;
     }
-    // t_list *tmp = lst;
-    // while (tmp)
-    // {
-    //     printf("Token: [%s]\n", tmp->content);
-    //     tmp = tmp->next;
-    // }
-    return(lst);
+    return(1);
 }
 
-void ft_syntax_erorr(t_list *lst)
+int ft_syntax_erorr(t_list *lst)
 {
     if(lst->content[0] == '|' || (((lst->content[0] == '<' || lst->content[0] == '>') && (lst->next == NULL)))
         || ((lst->content[0] == '<' || lst->content[0] == '>') && (lst->next->content[0] == '|' || lst->next->content[0] == '<' || lst->next->content[0] == '>')))
     {
         printf("bash: syntax error near unexpected token `%c'\n",lst->content[0]);
+        return(0);
     }
     else
     {
@@ -44,19 +43,18 @@ void ft_syntax_erorr(t_list *lst)
             if((lst->content[0] == '<' || lst->content[0] == '>')
                 && (lst->next->content[0] == '|' || lst->next->content[0] == '<' || lst->next->content[0] == '>'))
             {
-                printf("bash: syntax error near unexpected token `%s'\n", lst->next->content);
+                return(printf("bash: syntax error near unexpected token `%s'\n", lst->next->content), 0);
             }
             else if((lst->content[0] == '|') && (lst->next->content[0] == '|'))
             {
-                printf("bash: syntax error near unexpected token `|'\n");
+                return(printf("bash: syntax error near unexpected token `|'\n"), 0);
             }
             lst = lst->next;
             if (lst->next == NULL && (lst->content[0] == '|' || lst->content[0] == '<' || lst->content[0] == '>'))
-            {
-                printf("bash: syntax error near unexpected token `newline'\n");
-            }
+                return(printf("bash: syntax error near unexpected token `newline'\n"), 0);
         }
     }
+    return(1);
 }
 
 
@@ -252,18 +250,23 @@ int main(int argc, char **argv, char **envp)
     arg = NULL;
     while (1)
     {
+        lst = NULL;
         char *input = readline("minishell> ");
         if (!input)
             break ;
         add_history(input);
-        lst = ft_fun(input);
-        ft_syntax_erorr(lst);
-        arg = ft_type_comente_in_out_put(lst);
-        // claiming_env(envp, my_envp);
-        my_envp->key = "HOME";
-        my_envp->value = "YOUST";
-        my_envp->next = NULL;
-        ft_expand_variables(arg, my_envp);
+        if(ft_fun(input,&lst))
+        {
+            if(ft_syntax_erorr(lst))
+            {
+                arg = ft_type_comente_in_out_put(lst);
+                // claiming_env(envp, my_envp);
+                // my_envp->key = "HOME";
+                // my_envp->value = "YOUST";
+                // my_envp->next = NULL;
+                // ft_expand_variables(arg, my_envp);
+            }
+        }
     }
     return 0;
 }
