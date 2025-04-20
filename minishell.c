@@ -7,7 +7,7 @@ int ft_fun(char *input,t_list **lst)
     i = 0;
     while (input[i])
     {
-        while (input[i] && input[i] != ' ')
+        while (input[i] && input[i] != ' ' && input[i] != '\t')
         {
             if (input[i] == '|' || input[i] == '<' || input[i] == '>')
                 ft_pips(input, &i, lst);
@@ -22,7 +22,7 @@ int ft_fun(char *input,t_list **lst)
                     return(0);
             }
         }
-        if (input[i] == ' ')
+        if (input[i] == ' ' || input[i] == '\t')
             i++;
     }
     return(1);
@@ -82,191 +82,182 @@ t_node *ft_type_comente_in_out_put(t_list *lst)
             ft_lstadd_back1(&arg, ft_lstnew1(lst->content,0));
         lst = lst->next;
     }
-    t_node *tmp = arg;
-    while (tmp)
-    {
-        printf("Token: [%s]---->{%d}\n", tmp->data,tmp->type);
-        tmp = tmp->next;
-    }
+    // t_node *tmp = arg;
+    // while (tmp)
+    // {
+    //     printf("Token: [%s]---->{%d}\n", tmp->data,tmp->type);
+    //     tmp = tmp->next;
+    // }
     return(arg);
 }
-void ft_copy(char *dap, char *str, int *a)
-{
-    int i;
 
-    i = 0;
-    while(str[i])
-    {
-        dap[*a] = str[i];
-        i++;
-        (*a)++;
-    }
-}
-
-char *ft_strlen_key(int *i,char *str)
-{
-    int a;
-    int j;
-    int len_key;
-    char *src;
-    a = *i;
-    j = 0;
-    while((str[a] >= 97 && str[a] <= 122) 
-        || (str[a] >= 65 && str[a] <= 90) || (str[a] == 95))
-    {
-        len_key++;
-        a++;
-    }
-    src = malloc(sizeof(char) * len_key + 1);
-    while(((str[*i] >= 97 && str[*i] <= 122) 
-        || (str[*i] >= 65 && str[*i] <= 90) || (str[*i] == 95)))
-    {
-        src[j++] = str[(*i)++];
-    }
-    src[j] = '\0';
-    return (src);
-}
-
-void ft_exp2(t_node *lst, t_env *my_env,char *dap,int *i, int *a)
-{
-    int b;
-    char *src;
-
-    (*i)++;
-    if((lst->data[*i] >= 97 && lst->data[*i] <= 122) 
-        || (lst->data[*i] >= 65 && lst->data[*i] <= 90) || (lst->data[*i] == 95))
-    {
-        src = ft_strlen_key(i,lst->data);
-    }
-    while(my_env)
-    {
-        b = 0;
-        while(my_env->key[b])
-        {
-            if(my_env->key[b] != src[b])
-                break;
-            b++;
-        }
-        if(my_env->key[b] || src[b])
-            my_env = my_env->next;
-        else
-        {
-            ft_copy(dap, my_env->value, a);
-            break ;
-        }
-    }
-}
-
-void ft_strlen_$(int *i,char *lst)
-{
-    int t;
-    t = 0;
-    while(lst[*i] == '$')
-    {
-        (*i)++;
-        t++;
-    }
-    if(t % 2 == 1)
-    {
-        (*i)--;
-    }
-}
-
-void ft_exp(t_node *lst, t_env *my_env, int t)
-{
-    int a;
-    int i;
-    int y;
-    char *dap;
-
-    dap = malloc(sizeof(char) * (t + 1));
-    a = 0;
-    i = 0;
-    y = 0;
-    while(lst->data[i])
-    {
-        if(lst->data[i] == '$' && ((lst->data[i + 1] >= 97 && lst->data[i+1] <= 122)
-            || (lst->data[i + 1] >= 65 && lst->data[i+1] <= 90) || (lst->data[i+1] == 95)))
-                ft_exp2(lst, my_env,dap, &i, &a);
-        else
-        {
-            if(lst->data[i] == '$' && lst->data[i+1] == '$')
-                ft_strlen_$(&i,lst->data);
-            else if(lst->data[i] == '$' && lst->data[i+1] == '\"')
-            {
-                y++;
-                if(y % 2 == 0)
-                    dap[a++] = lst->data[i];
-                i++;
-            }
-            else
-                dap[a++] = lst->data[i++];
-        }
-    }
-    dap[a] = '\0';
-    lst->data = dap;
-}
 void ft_expand_variables(t_node *lst, t_env *my_env)
 {
     int i;
     int a;
+    int j;
+    int t;
 
     i = 0;
     a = 0;
+    j = 0;
+    t = 0;
     t_node *tmp = lst;
     while(lst)
     {
         i = 0;
-        if(lst->data[0] != '\'')
+        if(lst->data[i])
         {
             a = 0;
             while(lst->data[i])
             {
-                if(lst->data[i] == '$')
+                if(lst->data[i] == '\'' && t % 2 == 0)
+                    j++;
+                else if(lst->data[i] == '\"' && j % 2 == 0)
+                    t++;
+                if(lst->data[i] == '$' && (j % 2 == 0))
                     a++;
                 i++;
             }
             if(a > 0)
-            {
-                ft_exp(lst, my_env, i);
-            }
+                ft_exp(lst, my_env);
         }
+        lst = lst->next;
+    }
+    // while (tmp)
+    // {
+    //     printf("Token: [%s]\n", tmp->data);
+    //     tmp = tmp->next;
+    // }
+}
+//////////////////
+t_env *ft_lstnew19(void)
+{
+    t_env *new_node = malloc(sizeof(t_env));
+    if (!new_node)
+        return NULL;
+    new_node->key = "HOME";
+    new_node->value = "YOUSThfdxjgdktdkhflhfhfshljsikjhwkhjw";
+    new_node->next = NULL;
+    return new_node;
+}
+t_env *ft_lstnew18(void)
+{
+    t_env *new_node = malloc(sizeof(t_env));
+    if (!new_node)
+        return NULL;
+    new_node->key = "PATH";
+    new_node->value = "one two";
+    new_node->next = NULL;
+    return new_node;
+}
+
+void ft_lstadd_back19(t_env **lst, t_env *new_node)
+{
+    if (!*lst)
+    {
+        *lst = new_node;
+        return;
+    }
+    t_env *temp = *lst;
+    while (temp->next)
+        temp = temp->next;
+    temp->next = new_node;
+}
+//////////////
+
+void ft_dapel_qotichin(t_node *lst)
+{
+    int i;
+    int j;
+    int m;
+    int t;
+    char *str;
+    t_node *tmp = lst;
+
+    while(lst)
+    {
+        j = 0;
+        t = 0;
+        i = 0;
+        m = 0;
+        while(lst->data[i])
+        {
+            if(lst->data[i] == '\'' && t % 2 == 0)
+                j++;
+            else if(lst->data[i] == '\"' && j % 2 == 0)
+                t++;
+            else if((lst->data[i] != '\"' && j % 2 == 0) || (lst->data[i] != '\'' && t % 2 == 0)
+                ||(lst->data[i] == '\'' && t % 2 == 1)||(lst->data[i] == '\"' && j % 2 == 1))
+            {
+                m++;
+            }
+            i++;
+        }
+        str = malloc(sizeof(char) * (m + 1));
+        i = 0;
+        m = 0;
+        j = 0;
+        t = 0;
+        while(lst->data[i])
+        {
+            if(lst->data[i] == '\'' && t % 2 == 0)
+                j++;
+            else if(lst->data[i] == '\"' && j % 2 == 0)
+                t++;
+            else if((lst->data[i] != '\"' && j % 2 == 0) || (lst->data[i] != '\'' && t % 2 == 0)
+                ||(lst->data[i] == '\'' && t % 2 == 1)||(lst->data[i] == '\"' && j % 2 == 1))
+                str[m++] = lst->data[i];
+            i++;
+        }
+        str[m] = '\0';
+        //free(lst->data);
+        lst->data = str;
+        str = NULL;
         lst = lst->next;
     }
     while (tmp)
     {
-        printf("Token: [%s]\n", tmp->data);
+        printf("Toooo: [%s]--->%d\n", tmp->data, tmp->type);
         tmp = tmp->next;
     }
 }
+
 
 int main(int argc, char **argv, char **envp)
 {
     t_list *lst;
     t_node *arg;
     t_env *my_envp;
+    char *input;
 
     lst = NULL;
     arg = NULL;
+    input = NULL;
     while (1)
     {
         lst = NULL;
-        char *input = readline("minishell> ");
-        if (!input)
-            break ;
+        input = readline("minishell> ");
+        if (input[0] == '\0')
+        {
+            free(input);
+            continue;
+        }
         add_history(input);
         if(ft_fun(input,&lst))
         {
+            if(lst == NULL)
+                continue;
             if(ft_syntax_erorr(lst))
             {
                 arg = ft_type_comente_in_out_put(lst);
                 // claiming_env(envp, my_envp);
-                // my_envp->key = "HOME";
-                // my_envp->value = "YOUST";
-                // my_envp->next = NULL;
-                // ft_expand_variables(arg, my_envp);
+                ft_lstadd_back19(&my_envp, ft_lstnew19());
+                ft_lstadd_back19(&my_envp, ft_lstnew18());
+                ft_expand_variables(arg, my_envp);
+                ft_dapel_qotichin(arg);
             }
         }
-    }
+    } 
     return 0;
 }
