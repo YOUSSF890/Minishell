@@ -10,15 +10,18 @@ int ft_fun(char *input,t_list **lst)
         while (input[i] && input[i] != ' ' && input[i] != '\t')
         {
             if (input[i] == '|' || input[i] == '<' || input[i] == '>')
-                ft_pips(input, &i, lst);
+            {
+                if (!ft_pips(input, &i, lst))
+                    return(0);
+            }
             else if (input[i] == '\"' || input[i] == '\'')
             {
-                if(!ft_handle_double_single(input, &i, lst))
+                if (!ft_handle_double_single(input, &i, lst))
                     return(0);
             }
             else
             {
-                if(!ft_handle_string(input, &i, lst))
+                if (!ft_handle_string(input, &i, lst))
                     return(0);
             }
         }
@@ -30,8 +33,9 @@ int ft_fun(char *input,t_list **lst)
 
 int ft_syntax_erorr(t_list *lst)
 {
-    if(lst->content[0] == '|' || (((lst->content[0] == '<' || lst->content[0] == '>') && (lst->next == NULL)))
-        || ((lst->content[0] == '<' || lst->content[0] == '>') && (lst->next->content[0] == '|' || lst->next->content[0] == '<' || lst->next->content[0] == '>')))
+    if(lst->content[0] == '|' || (((lst->content[0] == '<' || lst->content[0] == '>')
+        && (lst->next == NULL))) || ((lst->content[0] == '<' || lst->content[0] == '>')
+        && (lst->next->content[0] == '|' || lst->next->content[0] == '<' || lst->next->content[0] == '>')))
     {
         printf("bash: syntax error near unexpected token `%c'\n",lst->content[0]);
         return(0);
@@ -42,13 +46,9 @@ int ft_syntax_erorr(t_list *lst)
         {
             if((lst->content[0] == '<' || lst->content[0] == '>')
                 && (lst->next->content[0] == '|' || lst->next->content[0] == '<' || lst->next->content[0] == '>'))
-            {
                 return(printf("bash: syntax error near unexpected token `%s'\n", lst->next->content), 0);
-            }
             else if((lst->content[0] == '|') && (lst->next->content[0] == '|'))
-            {
                 return(printf("bash: syntax error near unexpected token `|'\n"), 0);
-            }
             lst = lst->next;
             if (lst->next == NULL && (lst->content[0] == '|' || lst->content[0] == '<' || lst->content[0] == '>'))
                 return(printf("bash: syntax error near unexpected token `newline'\n"), 0);
@@ -82,12 +82,6 @@ t_node *ft_type_comente_in_out_put(t_list *lst)
             ft_lstadd_back1(&arg, ft_lstnew1(lst->content,0));
         lst = lst->next;
     }
-    // t_node *tmp = arg;
-    // while (tmp)
-    // {
-    //     printf("Token: [%s]---->{%d}\n", tmp->data,tmp->type);
-    //     tmp = tmp->next;
-    // }
     return(arg);
 }
 
@@ -124,11 +118,6 @@ void ft_expand_variables(t_node *lst, t_env *my_env)
         }
         lst = lst->next;
     }
-    // while (tmp)
-    // {
-    //     printf("Token: [%s]\n", tmp->data);
-    //     tmp = tmp->next;
-    // }
 }
 //////////////////
 t_env *ft_lstnew19(void)

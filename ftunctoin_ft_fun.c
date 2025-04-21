@@ -19,17 +19,28 @@ t_list *ft_lstnew(char *content)
     t_list *new_node = malloc(sizeof(t_list));
     if (!new_node)
         return NULL;
-    new_node->content = strdup(content);
+    new_node->content = content;
     new_node->next = NULL;
     return new_node;
 }
 
-void ft_pips(char *input, int *i, t_list **lst)
+int ft_pips(char *input, int *i, t_list **lst)
 {
-    char temp[100];
-    int a = 0;
+    char *temp;
+    int n;
+    int a;
+    a = 0;
+    n = *i;
+    if ((input[n] == '>' && input[n + 1] == '>') || (input[n] == '<' && input[n + 1] == '<'))
+    {
+        a++;
+        n++;
+    }
+    temp = malloc(sizeof(char) * (a + 1));
+    if (!temp)
+        return(free(input), ft_free(*lst), 0);
+    a = 0;
     temp[a++] = input[*i];
-
     if ((input[*i] == '>' && input[*i + 1] == '>') || (input[*i] == '<' && input[*i + 1] == '<'))
     {
         (*i)++;
@@ -51,7 +62,8 @@ int ft_handle_double_single(char *input, int *i, t_list **lst)
         if(!ft_handle1(input,i,handel))
             return(0);
         ft_handle3(input,i,handel);
-        if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|' || input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
+        if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|'
+            || input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
         {
             break;
         }
@@ -65,22 +77,19 @@ int ft_handle_string(char *input, int *i, t_list **lst)
     t_handel *handel;
     handel = ft_lstnew_handl(*i);
     handel->temp = malloc(sizeof(char) * (100 + 1));
-
     while (input[*i] && (input[*i] != ' ' || input[*i] == '\t') && input[*i] != '|' && input[*i] != '>' && input[*i] != '<')
     {
         if(input[*i] == '\"' || input[*i] == '\'')
         {
             handel->a = *i;
-            while(input[*i])
+            while (input[*i])
             {
-                if(!ft_handle1(input,i,handel))
+                if (!ft_handle1(input,i,handel))
                     return(0);
                 ft_handle3(input,i,handel);
-                if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|' || input[*i] == '>'
-                    || input[*i] == '<' || input[*i] == '\0'))
-                {
+                if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|'
+                    || input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
                     break ;
-                }
             }
         }
         else

@@ -22,11 +22,11 @@ void ft_exp2(t_node *lst, t_env *my_env,char *dap,int *i, int *a)
 
 	(*i)++;
 	if((lst->data[*i] >= 97 && lst->data[*i] <= 122) 
-		|| (lst->data[*i] >= 65 && lst->data[*i] <= 90) || (lst->data[*i] == 95) || (lst->data[*i] >= 48 && lst->data[*i] <= 57))
+		|| (lst->data[*i] >= 65 && lst->data[*i] <= 90) || (lst->data[*i] == 95)
+		|| (lst->data[*i] >= 48 && lst->data[*i] <= 57))
 	{
 		src = ft_strlen_key(i,lst->data);
 	}
-	printf("--------------%s----\n",src);
 	while(my_env)
 	{
 		b = 0;
@@ -114,14 +114,9 @@ void ft_exp(t_node *lst, t_env *my_env)
 				else if(lst->data[i+1] == '\"' && j % 2 == 0)
 					y = m + 1;
 				if(y % 2 == 1)
-				{
 					i++;
-				}
 				else
-				{
-					dap[a++] = lst->data[i];
-					i++;
-				}
+					dap[a++] = lst->data[i++];
 			}
 			else
 				dap[a++] = lst->data[i++];

@@ -49,7 +49,7 @@ t_node *ft_lstnew1(char *content, int type);
 
 void ft_lstadd_back(t_list **lst, t_list *new_node);
 t_list *ft_lstnew(char *content);
-void ft_pips(char *input, int *i, t_list **lst);
+int ft_pips(char *input, int *i, t_list **lst);
 int ft_handle_double_single(char *input, int *i, t_list **lst);
 int ft_handle_string(char *input, int *i, t_list **lst);
 
@@ -58,7 +58,7 @@ void	claiming_env(char **env_p, t_env *my_env);
 void	ft_lstadd_back12(t_env **lst, t_env *new);
 
 //ft_fun
-void ft_pips(char *input, int *i, t_list **lst);
+int ft_pips(char *input, int *i, t_list **lst);
 int ft_handle_double_single(char *input, int *i, t_list **lst);
 int ft_handle_string(char *input, int *i, t_list **lst);
 t_handel *ft_lstnew_handl(int i);

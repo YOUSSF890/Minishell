@@ -6,6 +6,7 @@ t_handel *ft_lstnew_handl(int i)
     if (!new_node)
         return NULL;
     new_node->t = 0;
+    new_node->a = 0;
     new_node->q = 1;
     new_node->quote_count = 1;
     new_node->next = NULL;
@@ -57,20 +58,16 @@ void ft_handle3(char *input,int *i,t_handel *handel)
 {
     if (((input[*i] == '\"') || input[*i] == '\'') && input[*i])
     {
-        handel->temp[(handel->t)++] = input[*i];
-        (*i)++;
+        handel->temp[(handel->t)++] = input[(*i)++];
         if(input[*i]) //  echo "$HOME$"$"youssef"    input[*i] = '\0'  او هدي *i++ حيت هدي نزيد ب
         {
             handel->a = *i;
             if(input[handel->a] == '\"')
-            {
                 handel->quote_count = 1;
-            }
             else if(input[handel->a] == '\'')
-            {
                 handel->q = 1;
-            }
-            else if((input[*i] != ' ' || input[*i] == '\t') && input[*i] != '>' && input[*i] != '<' && input[*i] != '|' && input[*i])
+            else if((input[*i] != ' ' || input[*i] == '\t') && input[*i] != '>'
+                && input[*i] != '<' && input[*i] != '|' && input[*i])
             {
                 handel->temp[(handel->t)++] = input[(*i)++];
                 handel->quote_count = 1;
