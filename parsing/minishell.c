@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 int ft_fun(char *input,t_list **lst)
 {
@@ -96,7 +96,6 @@ void ft_expand_variables(t_node *lst, t_env *my_env)
     a = 0;
     j = 0;
     t = 0;
-    t_node *tmp = lst;
     while(lst)
     {
         i = 0;
@@ -119,41 +118,6 @@ void ft_expand_variables(t_node *lst, t_env *my_env)
         lst = lst->next;
     }
 }
-//////////////////
-t_env *ft_lstnew19(void)
-{
-    t_env *new_node = malloc(sizeof(t_env));
-    if (!new_node)
-        return NULL;
-    new_node->key = "HOME";
-    new_node->value = "YOUSThfdxjgdktdkhflhfhfshljsikjhwkhjw";
-    new_node->next = NULL;
-    return new_node;
-}
-t_env *ft_lstnew18(void)
-{
-    t_env *new_node = malloc(sizeof(t_env));
-    if (!new_node)
-        return NULL;
-    new_node->key = "PATH";
-    new_node->value = "one two";
-    new_node->next = NULL;
-    return new_node;
-}
-
-void ft_lstadd_back19(t_env **lst, t_env *new_node)
-{
-    if (!*lst)
-    {
-        *lst = new_node;
-        return;
-    }
-    t_env *temp = *lst;
-    while (temp->next)
-        temp = temp->next;
-    temp->next = new_node;
-}
-//////////////
 
 void ft_dapel_qotichin(t_node *lst)
 {
@@ -212,9 +176,31 @@ void ft_dapel_qotichin(t_node *lst)
     }
 }
 
+void exec_commands(t_node *nodes, t_env *my_env)
+{
+	char *cmd_path;
+	char **cmd;
+	char **group_cmd;
+
+    cmd_path = NULL;
+    cmd = NULL;
+	// if (!cmd)
+	// {
+	// 	perror("Minishell");
+	// 	exit(1);
+	// }	
+	group_cmd = each_group_cmd(nodes);
+	if (piping_forking(cmd_path, cmd, group_cmd, nodes, my_env) == -1)
+	{
+		perror("Minishell");
+		exit(1);
+	}	
+	return ;	
+}
 
 int main(int argc, char **argv, char **envp)
 {
+    // static int num_err;
     t_list *lst;
     t_node *arg;
     t_env *my_envp;
@@ -223,30 +209,32 @@ int main(int argc, char **argv, char **envp)
     lst = NULL;
     arg = NULL;
     input = NULL;
+    my_envp = NULL;
     while (1)
     {
         lst = NULL;
         input = readline("minishell> ");
+        if (!input)
+            exit(0);
         if (input[0] == '\0')
         {
             free(input);
             continue;
         }
         add_history(input);
-        if(ft_fun(input,&lst))
+        if (ft_fun(input,&lst))
         {
-            if(lst == NULL)
+            if (lst == NULL)
                 continue;
-            if(ft_syntax_erorr(lst))
+            if (ft_syntax_erorr(lst))
             {
                 arg = ft_type_comente_in_out_put(lst);
-                // claiming_env(envp, my_envp);
-                ft_lstadd_back19(&my_envp, ft_lstnew19());
-                ft_lstadd_back19(&my_envp, ft_lstnew18());
+                claiming_env(envp, &my_envp);
                 ft_expand_variables(arg, my_envp);
                 ft_dapel_qotichin(arg);
+                // exec_commands(arg, my_envp);
             }
         }
     } 
-    return 0;
+    return (free(input),ft_free(&lst),0);
 }

@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 void ft_free(t_list **lst)
 {
@@ -11,3 +11,4 @@ void ft_free(t_list **lst)
          *lst = temp;
     }
 }
+

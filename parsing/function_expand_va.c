@@ -1,4 +1,4 @@
-#include "minishell.h"
+#include "../minishell.h"
 
 void ft_strlen_$(int *i,char *lst)
 {
@@ -23,7 +23,7 @@ void ft_exp2(t_node *lst, t_env *my_env,char *dap,int *i, int *a)
 	(*i)++;
 	if((lst->data[*i] >= 97 && lst->data[*i] <= 122) 
 		|| (lst->data[*i] >= 65 && lst->data[*i] <= 90) || (lst->data[*i] == 95)
-		|| (lst->data[*i] >= 48 && lst->data[*i] <= 57))
+		|| (lst->data[*i] >= 48 && lst->data[*i] <= 57) || lst->data[*i] == '?')
 	{
 		src = ft_strlen_key(i,lst->data);
 	}
@@ -44,13 +44,14 @@ void ft_exp2(t_node *lst, t_env *my_env,char *dap,int *i, int *a)
 			break ;
 		}
 	}
+	if(ft_strncmp(src, "$?", 2))
+		ft_functin_env(dap, a);
 }
 
 int ft_strlen_envd(t_node *lst, t_env *my_env)
 {
 	int a;
 	int i;
-	int y;
 	int j;
 	int m;
 
@@ -67,7 +68,7 @@ int ft_strlen_envd(t_node *lst, t_env *my_env)
 			m++;
 		if(lst->data[i] == '$' && j % 2 == 0 && ((lst->data[i + 1] >= 97 && lst->data[i+1] <= 122)
 			|| (lst->data[i + 1] >= 65 && lst->data[i+1] <= 90) || (lst->data[i+1] == 95)
-			|| (lst->data[i + 1] >= 48 && lst->data[i+1] <= 57)))
+			|| (lst->data[i + 1] >= 48 && lst->data[i+1] <= 57) || lst->data[i + 1] == '?'))
 				ft_exp55(lst, my_env, &i, &a);
 		else
 		{
@@ -99,9 +100,9 @@ void ft_exp(t_node *lst, t_env *my_env)
 			j++;
 		else if(lst->data[i] == '\"' && j % 2 == 0)
 			m++;
-		if(lst->data[i] == '$' && j % 2 == 0 && ((lst->data[i + 1] >= 97 && lst->data[i+1] <= 122)
-			|| (lst->data[i + 1] >= 65 && lst->data[i+1] <= 90) || (lst->data[i+1] == 95)
-			|| (lst->data[i + 1] >= 48 && lst->data[i+1] <= 57)))
+		if(lst->data[i] == '$' && j % 2 == 0 && ((lst->data[i + 1] >= 97 && lst->data[i + 1] <= 122)
+			|| (lst->data[i + 1] >= 65 && lst->data[i + 1] <= 90) || (lst->data[i + 1] == 95)
+			|| (lst->data[i + 1] >= 48 && lst->data[i + 1] <= 57) || (lst->data[i + 1] == '?')))
 				ft_exp2(lst, my_env,dap, &i, &a);
 		else
 		{
