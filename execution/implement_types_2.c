@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   implement_types_2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/26 23:40:09 by rd_md_haker       #+#    #+#             */
-/*   Updated: 2025/05/06 14:45:22 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/05/10 10:00:28 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,10 @@ int exec_builtin(char **cmd, t_env **my_env, t_node **nodes)
 		if (implement_exit(my_env, nodes) == 0)
 			return (1);
 	}
-	// if (ft_strcmp(cmd[0], "export") == 0)
-	// {
-	//     if (implement_export() == 0)
-	//         return (1);
-	// }
+	if (ft_strcmp(cmd[0], "export") == 0)
+	{
+	    if (implement_export(my_env, nodes) == 0)
+	        return (1);
+	}
 	return (0);
 }

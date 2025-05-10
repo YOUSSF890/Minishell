@@ -50,11 +50,15 @@ typedef struct t_export
 
 typedef struct t_handel
 {
-	int t;
-	char *temp;
-	int q;
-	int quote_count;
-	int a;
+	int		t;
+	char	*temp;
+	int		q;
+	int		quote_count;
+	int		a;
+	// count_cmd
+	int		singl_qoute;
+	int		dablla_qoute;
+	int		count;
 	struct t_handel *next;
 }				t_handel;
 
@@ -159,7 +163,7 @@ int		implement_pwd();
 int		implement_cd(t_env **env, t_node *nodes);
 int		implement_echo(t_env *env, t_node *nodes);
 int		implement_exit(t_env **my_env, t_node **nodes);
-int implement_export(t_env *my_env);
+int implement_export(t_env *my_env, t_node *nodes);
 t_list *ft_lstnew();
 void len_env_value(char *str, int *a);
 void numstr_expand_with_quote(t_node *lst, t_env *my_env,int *i, int *a);
