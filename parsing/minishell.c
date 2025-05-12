@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 11:06:14 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/10 09:59:35 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/12 19:23:22 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,7 @@ void	expand_variables(t_node *lst, t_env *my_env)
 				j++;
 			else if (lst->data[i] == '\"' && j % 2 == 0)
 				t++;
-			if (lst->data[i] == '$' && (j % 2 == 0))
+			if (lst->data[i] == '$' && (j % 2 == 0) && lst->type != 3)
 			{
 				expanding_function(lst, my_env);
 				break ;
@@ -150,7 +150,7 @@ void	delete_qoutation(t_node *arg)
 	int		m;
 	int		t;
 	char	*str;
-	t_node *tmp = arg;
+	// t_node *tmp = arg;
 
 	while (arg)
 	{
@@ -192,11 +192,11 @@ void	delete_qoutation(t_node *arg)
 		arg->data = str;
 		arg = arg->next;
 	}
-	while (tmp)
-	{
-	    printf("Toooo: [%s]------>{%d}\n", tmp->data,tmp->type);
-	    tmp = tmp->next;
-	}
+	// while (tmp)
+	// {
+	//     printf("Toooo: [%s]------>{%d}\n", tmp->data,tmp->type);
+	//     tmp = tmp->next;
+	// }
 }
 
 void exec_commands(t_node **nodes, t_env **my_env)
