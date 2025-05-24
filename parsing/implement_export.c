@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 16:29:50 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/22 16:26:26 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/24 21:55:39 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,14 @@ void	add_value_export(t_env *my_env, t_node *nodes)
 		}
 		if (cpy_env == NULL)
 		{
-			ft_lstadd_back_env(&cpy_env, ft_lstnew_env());
+			
+			ft_lstadd_back_env(&cpy_env1, ft_lstnew_env());
 			while (cpy_env1)
 			{
 				if (!cpy_env1->next)
 				{
 					cpy_env1->key = ft_cpy_key(i, nodes);
-					cpy_env1->value = ft_cpy_value(&i, nodes, cpy_env);
+					cpy_env1->value = ft_cpy_value(&i, nodes, cpy_env1);
 				}
 				cpy_env1 = cpy_env1->next;
 			}
@@ -92,12 +93,12 @@ int	implement_export(t_env *my_env, t_node *nodes)
 	{
 		while (my_env)
 		{
-			// if(my_env->key)
-			printf("declare -x %s", my_env->key);
-			// if(my_env->type == 1)
-			printf("=\"%s\"\n", my_env->value);
-			// else
-			// 	printf("\n");
+			if(my_env->key)
+				printf("declare -x %s", my_env->key);
+			if(my_env->type == 1)
+				printf("=\"%s\"\n", my_env->value);
+			else
+				printf("\n");
 			my_env = my_env->next;
 		}
 	}

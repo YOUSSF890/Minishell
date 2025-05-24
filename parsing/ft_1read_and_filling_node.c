@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:23:30 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/19 11:21:41 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/24 20:12:24 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,11 @@ int	handel_qoutation(char *input, int *i, t_handel *handel)
 			break ;
 		handel->temp[(handel->t)++] = input[*i];
 		(*i)++;
-		// if (!input[*i]) // break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
-		// {
-		// 	printf("eroor\n");
-		// 	return (0);
-		// }
+		if (!input[*i]) // break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
+		{
+			printf("eroor\n");
+			return (0);
+		}
 	}
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:13:58 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/20 15:27:02 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/24 19:50:24 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	expanding_function(t_node *lst, t_env *my_env)
 	// free(dap);
 }
 
-void	expand_variables(t_node *lst, t_env *my_env)
+void expand_variables(t_node *lst, t_env *my_env)
 {
 	int	i;
 	int	j;

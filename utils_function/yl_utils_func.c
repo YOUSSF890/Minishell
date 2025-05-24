@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 11:21:49 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/22 14:40:17 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/24 16:09:31 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_env	*ft_lstnew_env()
 	if (!new_node)
 		return (NULL);
 
-	// new_node->type = 0;
+	new_node->type = 1;
     new_node->next = NULL;
     return (new_node);
 }
@@ -74,7 +74,7 @@ t_env	*ft_lstnewt(char *env_key, char	*env_value)
 		return (NULL);
 	ptr->value = env_value;
 	ptr->key = env_key;
-	// ptr->type = 1;
+	ptr->type = 1;
 	ptr->next = NULL;
 	return (ptr);
 }

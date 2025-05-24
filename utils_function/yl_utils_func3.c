@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 11:47:14 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/22 14:39:48 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/24 21:56:10 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,12 +61,13 @@ int	ft_Check_key(char c)
 		return (1);
 	else if (c == 95)
 		return (1);
-	// else
-	// {
-	// 	printf("eroor ft_check_key\n");
-	// 	exit(1);
-	// }
-	return (0);
+	else if(c == '+' || c == '=')
+		return(0);
+	else
+	{
+		printf("eroor ft_check_key\n");
+		exit(1);
+	}
 }
 
 char	*ft_cpy_key(int i, t_node *nodes)
@@ -125,20 +126,18 @@ char *ft_cpy_value(int *i, t_node *nodes, t_env *my_env)
 	if(nodes->data[*i] == '+' && nodes->data[(*i) + 1] == '=')
 	{
 		*i = *i + 2;
-		// my_env->type = 1;
+		my_env->type = 1;
 		str = md_strjoin(my_env->value, nodes->data + (*i));
 		yl_strlen(nodes->data, i);
 	}
-	else
+	else if(nodes->data[*i] == '=')
 	{
-		// if(nodes->data[(*i)++] == '=')
-		// {
-		// 	// if (my_env)
-		// 		// my_env->type = 1;
-		// }
 		(*i)++;
+		my_env->type = 1;
 		str = yl_strcpy(str, nodes->data + (*i));
 		yl_strlen(nodes->data, i);
 	}
+	else
+		my_env->type = 0;
 	return (str);
 }

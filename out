@@ -1,0 +1,9 @@
+minishell> export +=
+To: [export]-->{0}
+To: [+=]-->{0}
+Segmentation fault (core dumped)
+bash-5.2$ export a
+bash-5.2$ export a=5
+bash-5.2$ '
+> ^C
+bash-5.2$ pipe fiha problem 3nd mohammed 
