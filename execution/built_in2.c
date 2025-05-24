@@ -6,7 +6,7 @@
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:43:25 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/03 09:26:36 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/05/12 17:53:38 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	helper_echo(t_env *env, char *nodes_data)
 	head = env;
 	trimmed = md_strtrim(nodes_data, "$");
 	if (!trimmed)
-		return (1);
+		return (perror("malloc "), 1);
 	while (env)
 	{
 		if (ft_strcmp(trimmed, env->key) == 0)
@@ -36,12 +36,29 @@ int	helper_echo(t_env *env, char *nodes_data)
 	return (0);
 }
 
+int	is_valid_n(char *str)
+{
+	int i;
+
+	if (!str || str[0] != '-')
+		return (0);
+	i = 1;
+	while (str[i])
+	{
+		if (str[i] != 'n')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 int	check_newline_flag(t_node **nodes)
 {
 	int	newline;
 
 	newline = 1;
-	while (*nodes && ft_strcmp((*nodes)->data, "-n") == 0)
+
+	while (*nodes && is_valid_n((*nodes)->data))
 	{
 		newline = 0;
 		*nodes = (*nodes)->next;
@@ -52,35 +69,36 @@ int	check_newline_flag(t_node **nodes)
 int	implement_echo(t_env *env, t_node *nodes)
 {
 	int	newline;
+	t_node	*head;
 
-	while (nodes && ft_strcmp(nodes->data, "echo") != 0)
-		nodes = nodes->next;
-	if (!nodes || !nodes->next)
-		return (printf("\n"), 0);
-	nodes = nodes->next;
-	newline = check_newline_flag(&nodes);
-	while (nodes && nodes->type == 0)
+	head = nodes;
+	while (head && ft_strcmp(head->data, "echo") != 0)
+		head = head->next;
+	if (!head || !head->next)
+		return (ft_putstr("\n"), 0);
+	head = head->next;
+	newline = check_newline_flag(&head);
+	while (head && head->type == 0)
 	{
-		if (nodes->data[0] == '$')
+		if (head->data[0] == '$')
 		{
-			if (helper_echo(env, nodes->data) == 1)
+			if (helper_echo(env, head->data) == 1)
 				return (1);
 		}
 		else
-			printf("%s", nodes->data);
-		if (nodes->next && nodes->next->type == 0)
-			printf(" ");
-		nodes = nodes->next;
+			ft_putstr(head->data); //ft_printf
+		if (head->next && head->next->type == 0) // ft_printf
+			ft_putstr(" ");
+		head = head->next;
 	}
 	if (newline)
-		printf("\n");
+		ft_putstr("\n");
 	return (0);
 }
 
-int	implement_exit(t_env **my_env, t_node **nodes)
+void	implement_exit(t_env **my_env, t_node **nodes)
 {
 	ft_free2(my_env);
 	ft_free1(nodes);
 	exit(0);
-	return (0);
 }

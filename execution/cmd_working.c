@@ -6,7 +6,7 @@
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:14:02 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/07 14:39:17 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/05/12 21:33:39 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ t_node	**split_nodes_by_pipe(t_node *nodes, int *num_groups)
 	*num_groups = help_split_node(nodes);
 	groups = malloc((*num_groups + 1) * sizeof(t_node *));
 	if (!groups)
-		return (NULL);
+		return (perror("malloc "), NULL);
 	group = NULL;
 	head = nodes;
 	while (head)
@@ -80,8 +80,7 @@ t_node	**split_nodes_by_pipe(t_node *nodes, int *num_groups)
 		head = head->next;
 	}
 	groups[i] = group;
-	groups[i + 1] = NULL;
-	return (groups);
+	return (groups[i + 1] = NULL, groups);
 }
 
 char	**helper_loop(char **cmd, t_node *nodes)
@@ -101,7 +100,7 @@ char	**helper_loop(char **cmd, t_node *nodes)
 	}
 	cmd = malloc(((num_cmd + 1) * sizeof(char *)));
 	if (!cmd)
-		return (NULL);
+		return (perror("malloc "), NULL);
 	while (nodes)
 	{
 		if (nodes->type == 0)
@@ -112,29 +111,78 @@ char	**helper_loop(char **cmd, t_node *nodes)
 	return (cmd);
 }
 
-char	**loop_through_node(t_node *nodes, char **cmd)
+char	**loop_through_node(t_node *nodes, char **cmd, t_env *env)
 {
 	t_node *head;
+	int 	is_entred;
 
 	head = nodes;
 	cmd = NULL;
+	is_entred = 0;
 	while (head)
 	{
-		if (head->type == 4)
-			implement_appending(head);
-		else if (head->type == 3)
+		if (head->type == 2)
 		{
-			if (!implement_her_doc(head))
-				return (0);
+			if (implement_infile(head) == 1)
+				return (NULL);
 		}
-		else if (head->type == 1)
-			implement_outfile(head);
-		else if (head->type == 2)
-			implement_infile(head);
+		if (head->type == 3 && is_entred != 1)
+		{
+			if (implement_her_doc(head, env) == 1)
+				return (NULL);
+			is_entred = 1;
+		}
+		if (head->type == 1)
+		{
+			if (implement_outfile(head) == 1)
+				return (NULL);
+		}
+		if (head->type == 4)
+		{
+			if (implement_appending(head))
+				return (NULL);
+		}
 		head = head->next;
 	}
 	cmd = helper_loop(cmd, nodes);
+	if (!cmd)
+		return (NULL);
 	return (cmd);
+}
+
+int	loop_through_node_builtin(t_node *nodes, t_env *env)
+{
+	t_node *head;
+	int 	is_entred;
+
+	head = nodes;
+	is_entred = 0;
+	while (head)
+	{
+		if (head->type == 2)
+		{
+			if (implement_infile(head) == 1)
+				return (1);
+		}
+		if (head->type == 3 && is_entred != 1)
+		{
+			if (implement_her_doc(head, env) == 1)
+				return (1);
+			is_entred = 1;
+		}
+		if (head->type == 1)
+		{
+			if (implement_outfile(head) == 1)
+				return (1);
+		}
+		if (head->type == 4)
+		{
+			if (implement_appending(head))
+				return (1);
+		}
+		head = head->next;
+	}
+	return (0);
 }
 
 char	**loop_through_node_cmd(t_node *nodes)
@@ -153,6 +201,8 @@ char *is_accessable(char **path, char *cmd)
 	char *temp;
 
 	i = 0;
+	if (!path)
+		return (NULL);
 	while (path[i])
 	{
 		if (access(cmd, X_OK) == 0)
