@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:51:43 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/21 18:26:56 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:02:44 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,21 @@ void	ft_functin_env(char *dap, t_ha *ha)
 	{
 		dap[(ha->dest_index)++] = str[i++];
 	}
+}
+void store_dap(char *dap, char *str, t_ha *ha, int *i)
+{
+	if(str[*i] == '\"')
+	{
+		dap[(ha->dest_index)++] = 14;
+		(*i)++;
+	}
+	else if(str[*i] == '\'')
+	{
+		dap[(ha->dest_index)++] = 15;
+		(*i)++;
+	}
+	else
+		dap[(ha->dest_index)++] = str[(*i)++];
 }
 
 void	copy_to_dap(char *dap, char *str, t_ha *ha)
@@ -43,13 +58,39 @@ void	copy_to_dap(char *dap, char *str, t_ha *ha)
 			{
 				if (i > 0 && str[i - 1] == ' ' && dap[0] != '\0')
 					dap[(ha->dest_index)++] = str[i - 1];
-				dap[(ha->dest_index)++] = str[i++];
+				store_dap(dap, str, ha, &i);
+				// if(str[i] == '\"')
+				// {
+				// 	dap[(ha->dest_index)++] = 14;
+				// 	i++;
+				// }
+				// else if(str[i] == '\'')
+				// {
+				// 	dap[(ha->dest_index)++] = 15;
+				// 	i++;
+				// }
+				// else
+				// 	dap[(ha->dest_index)++] = str[i++];
 			}
-			if (str[i] == '\"')
-				m++;
+			// if (str[i] == '\"')
+			// 	m++;
 		}
 		else
-			dap[(ha->dest_index)++] = str[i++];
+		{
+			store_dap(dap, str, ha, &i);
+			// if(str[i] == '\"')
+			// {
+			// 	dap[(ha->dest_index)++] = 14;
+			// 	i++;
+			// }
+			// else if(str[i] == '\'')
+			// {
+			// 	dap[(ha->dest_index)++] = 15;
+			// 	i++;
+			// }
+			// else
+			// 	dap[(ha->dest_index)++] = str[i++];
+		}
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:57:09 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/20 15:26:28 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:33:08 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,8 +69,6 @@ void	fill_up_node(char *dap, t_node *lst)
 		{
 			tmp[hal->dest_index] = '\0';
 			// free()lst->data 1
-			if (ft_tchek_q(tmp))
-				tmp = ft_copy_add_dabel_qoutes(tmp);
 			
 			lst->data = md_strdup(tmp);
 			lst->type = 0;

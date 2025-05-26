@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:01:57 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/20 13:12:05 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/26 11:29:20 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,28 @@ void exec_commands(t_node **nodes, t_env **my_env)
 		exit(1);
 	}
 	return ;	
+}
+void delete_sinqel_dabel_qoutishen(t_node *arg)
+{
+	int i;
+
+	while(arg)
+	{
+		i = 0;
+		while(arg->data[i])
+		{
+			if(arg->data[i] == 14)
+			{
+				arg->data[i] = '\"';
+			}
+			else if(arg->data[i] == 15)
+			{
+				arg->data[i] = '\'';
+			}
+			i++;
+		}
+		arg = arg->next;
+	}
 }
 
 int main(int argc, char **argv, char **envp)
@@ -61,6 +83,7 @@ int main(int argc, char **argv, char **envp)
 					claiming_env(envp, &my_envp);
 				expand_variables(arg, my_envp);
 				delete_qoutation(arg);
+				delete_sinqel_dabel_qoutishen(arg);
 				exec_commands(&arg, &my_envp);
 				// ft_free(&lst);
 				// ft_free1(&arg);
