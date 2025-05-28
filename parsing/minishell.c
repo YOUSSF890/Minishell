@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:01:57 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/26 11:29:20 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/27 16:10:01 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,11 +68,9 @@ int main(int argc, char **argv, char **envp)
 		if (!input)
 			exit(0);
 		if (input[0] == '\0')
-		{
 			continue;
-		}
 		add_history(input);
-		if (read_and_filling_node(input,&lst))
+		if (read_and_filling_node(input, &lst))
 		{
 			if (lst == NULL)
 				continue;
@@ -85,14 +83,14 @@ int main(int argc, char **argv, char **envp)
 				delete_qoutation(arg);
 				delete_sinqel_dabel_qoutishen(arg);
 				exec_commands(&arg, &my_envp);
-				// ft_free(&lst);
-				// ft_free1(&arg);
+				ft_free(&lst);
+				ft_free1(&arg);
 			}
-			// else
-			//     ft_free(&lst);
+			else
+			    ft_free(&lst);
 		}
-	// 	else
-	// 	    ft_free(&lst);
+		else
+		    ft_free(&lst);
 	}
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 11:47:14 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/26 11:45:28 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/27 10:50:16 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,11 @@ char	*ft_cpy_key(int i, t_node *nodes)
 
 	a = 0;
 	str = malloc(count_key(i, nodes) + 1);
+	if(!str)
+		return (NULL);
 	if(nodes->data[0] >= '0' && nodes->data[0] <= '9')
 	{
-		printf("eroor ft_cpy_key\n");
+		printf("eroor ft_cpy_key\n"); //free
 		exit(1);
 	}
 	while (ft_Check_key(nodes->data[i]))
@@ -109,13 +111,13 @@ char *ft_cpy_value(int *i, t_node *nodes, t_env *my_env)
 
 	str = malloc(count_value(*i, nodes, my_env) + 2);
 	if(!str)
-		return(NULL);
+		return (NULL);
 	while(ft_Check_key(nodes->data[*i]))
 		(*i)++;
 	if(nodes->data[*i] == '+' && nodes->data[(*i) + 1] == '+')
 	{
 		printf("mhd: export: `%s': not a valid identifier\n", nodes->data);
-		return (NULL);
+		return (free(str), NULL);
 	}
 	if(nodes->data[*i] == '+' && nodes->data[(*i) + 1] == '=')
 	{

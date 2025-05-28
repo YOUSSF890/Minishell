@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:14:54 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/19 12:23:22 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:34:40 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	ft_count_ec(char *arg)
 		}
 		hax->read_index++;
 	}
-	return (m);
+	return (free(hax), m);
 }
 
 void	delete_qoutation(t_node *arg)
@@ -46,6 +46,8 @@ void	delete_qoutation(t_node *arg)
 	{
 		ha = helper_varia();
 		str = malloc(sizeof(char) * (ft_count_ec(arg->data) + 1));
+		if(!str)
+			return(free(ha));
 		while (arg->data[ha->read_index])
 		{
 			if (arg->data[ha->read_index] == '\'' && ha->dablla_qoute % 2 == 0)
@@ -61,6 +63,7 @@ void	delete_qoutation(t_node *arg)
 		}
 		str[ha->dest_index] = '\0';
 		free(arg->data);
+		free(ha);
 		arg->data = str;
 		arg = arg->next;
 	}

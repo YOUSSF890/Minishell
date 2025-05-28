@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 16:29:50 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/24 21:55:39 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:42:13 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void	add_value_export(t_env *my_env, t_node *nodes)
 {
 	t_env	*cpy_env;
 	t_env	*cpy_env1;
+	char *fre;
 	int		i;
 
 	nodes = nodes->next;
@@ -62,9 +63,13 @@ void	add_value_export(t_env *my_env, t_node *nodes)
 		cpy_env1 = my_env;
 		while (cpy_env)
 		{
-			if (!ft_strcmp(cpy_env->key, ft_cpy_key(i, nodes)))
+			fre = ft_cpy_key(i, nodes);
+			if (!ft_strcmp(cpy_env->key, fre))
 			{
+				free(fre);
+				fre = cpy_env->value;
 				cpy_env->value = ft_cpy_value(&i, nodes, cpy_env);
+				free(fre);
 				break ;
 			}
 			cpy_env = cpy_env->next;

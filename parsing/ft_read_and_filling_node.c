@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:17:33 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/19 11:23:01 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/05/27 15:18:47 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,40 +79,12 @@ int	ft_ft(char *input, int *i, t_handel *handel)
 	return (1);
 }
 
-// int count_handle_str(char *input, int i)
-// {
-// 	t_handel	*handel;
-// 	int			col;
-
-// 	col = 0;
-// 	handel = helper_variables(i);
-// 	while (input[i] && (input[i] != ' ' && input[i] != '\t')
-// 		&& input[i] != '|' && input[i] != '>' && input[i] != '<')
-// 	{
-// 		if (input[i] == '\"' || input[i] == '\'')
-// 		{
-// 			col++;
-// 			if (ft_ft(input, &i, handel) == 0)
-// 				return (0);
-// 		}
-// 		else
-// 		{
-// 			col++;
-// 			i++;
-// 		}
-// 		if (input[i - 1] == '\0' || input[i - 1] == ' '
-// 			|| input[i - 1] == '\t')
-// 			break ;
-// 	}
-// 	return (col);
-// }
-
 int	ft_handle_string(char	*input, int	*i, t_list	**lst)
 {
 	t_handel	*handel;
 
 	handel = helper_variables(*i);
-	handel->temp = malloc(sizeof(char) * (100 + 1));//count_handle_str(input, *i)
+	handel->temp = malloc(sizeof(char) * (count_handle_str(input, *i) + 1));
 	if (!handel->temp)
 		return (free(input), ft_free(lst), free(handel), 0);
 	while (input[*i] && (input[*i] != ' ' && input[*i] != '\t')
