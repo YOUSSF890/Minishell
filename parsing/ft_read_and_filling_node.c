@@ -6,13 +6,13 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:17:33 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/27 15:18:47 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:49:13 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_handel_pipe_direction(char *input, int *i, t_list **lst)
+void	ft_handel_pipe_direction(char *input, int *i, t_list **lst)
 {
 	char	*temp;
 	int		n;
@@ -22,11 +22,9 @@ int	ft_handel_pipe_direction(char *input, int *i, t_list **lst)
 	n = *i;
 	if ((input[n] == '>' && input[n + 1] == '>')
 		|| (input[n] == '<' && input[n + 1] == '<'))
-		temp = malloc(sizeof(char) * (3));
+		temp = gc_malloc(3, 1);
 	else
-		temp = malloc(sizeof(char) * (2));
-	if (!temp)
-		return (free(input), ft_free(lst), 0);
+		temp = gc_malloc(2, 1);
 	a = 0;
 	temp[a++] = input[*i];
 	if ((input[*i] == '>' && input[*i + 1] == '>')
@@ -35,22 +33,18 @@ int	ft_handel_pipe_direction(char *input, int *i, t_list **lst)
 	temp[a] = '\0';
 	ft_lstadd_back(lst, ft_lstnew(temp));
 	(*i)++;
-	return (1);
 }
 
-int	ft_handle_double_single(char *input, int *i, t_list **lst)
+void	ft_handle_double_single(char *input, int *i, t_list **lst)
 {
 	t_handel	*handel;
 
-	handel = helper_variables(*i);
-	handel->temp = malloc(sizeof(char) * (count_string(input, *i, handel) + 1));
-	if (!handel->temp)
-		return (free(input), ft_free(lst), free(handel), 0);
+	handel = helper_variables();
+	handel->temp = gc_malloc(count_string(input, *i, handel) + 1, 1); //sizeof(char) * (count_string(input, *i, handel) + 1
 	handel->a = *i;
 	while (input[*i])
 	{
-		if (!handel_qoutation(input, i, handel))
-			return (free(input), ft_free(lst), free(handel->temp), free(handel), 0);
+		handel_qoutation(input, i, handel);
 		handle_multiple_quotes(input, i, handel);
 		if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|'
 				|| input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
@@ -60,40 +54,33 @@ int	ft_handle_double_single(char *input, int *i, t_list **lst)
 	}
 	handel->temp[handel->t] = '\0';
 	ft_lstadd_back(lst, ft_lstnew(handel->temp));
-	free(handel);
-	return (1);
 }
 
-int	ft_ft(char *input, int *i, t_handel *handel)
+void	ft_ft(char *input, int *i, t_handel *handel)
 {
 	handel->a = *i;
 	while (input[*i])
 	{
-		if (!handel_qoutation(input, i, handel))
-			return (free(input), free(handel->temp), free(handel), 0);
+		handel_qoutation(input, i, handel);
 		handle_multiple_quotes(input, i, handel);
 		if ((input[*i] == ' ' || input[*i] == '\t' || input[*i] == '|'
 				|| input[*i] == '>' || input[*i] == '<' || input[*i] == '\0'))
 			break ;
 	}
-	return (1);
 }
 
-int	ft_handle_string(char	*input, int	*i, t_list	**lst)
+void	ft_handle_string(char	*input, int	*i, t_list	**lst)
 {
 	t_handel	*handel;
 
-	handel = helper_variables(*i);
-	handel->temp = malloc(sizeof(char) * (count_handle_str(input, *i) + 1));
-	if (!handel->temp)
-		return (free(input), ft_free(lst), free(handel), 0);
+	handel = helper_variables();
+	handel->temp = gc_malloc(count_handle_str(input, *i) + 1, 1);
 	while (input[*i] && (input[*i] != ' ' && input[*i] != '\t')
 		&& input[*i] != '|' && input[*i] != '>' && input[*i] != '<')
 	{
 		if (input[*i] == '\"' || input[*i] == '\'')
 		{
-			if (ft_ft(input, i, handel) == 0)
-				return (ft_free(lst), 0);
+			ft_ft(input, i, handel);
 		}
 		else
 			handel->temp[(handel->t)++] = input[(*i)++];
@@ -103,11 +90,9 @@ int	ft_handle_string(char	*input, int	*i, t_list	**lst)
 	}
 	handel->temp[handel->t] = '\0';
 	ft_lstadd_back(lst, ft_lstnew(handel->temp));
-	free(handel);
-	return (1);
 }
 
-int	read_and_filling_node(char *input, t_list **lst)
+void	read_and_filling_node(char *input, t_list **lst)
 {
 	int	i;
 
@@ -118,22 +103,18 @@ int	read_and_filling_node(char *input, t_list **lst)
 		{
 			if (input[i] == '|' || input[i] == '<' || input[i] == '>')
 			{
-				if (!ft_handel_pipe_direction(input, &i, lst))
-					return (0);
+				ft_handel_pipe_direction(input, &i, lst);
 			}
 			else if (input[i] == '\"' || input[i] == '\'')
 			{
-				if (!ft_handle_double_single(input, &i, lst))
-					return (0);
+				ft_handle_double_single(input, &i, lst);
 			}
 			else
 			{
-				if (!ft_handle_string(input, &i, lst))
-					return (0);
+				ft_handle_string(input, &i, lst);
 			}
 		}
 		if (input[i] == ' ' || input[i] == '\t')
 			i++;
 	}
-	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:12:48 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/21 11:04:37 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 16:20:21 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,24 @@ void	claiming_env(char **env_p, t_env **my_env)
 	int		i;
 
 	i = 0;
+	ft_lstadd_back12(my_env, ft_lstnewt("OLDPWD", "/home/mradouan/Desktop/minishell"));
+	ft_lstadd_back12(my_env, ft_lstnewt("PWD", "/home/mradouan/Desktop/minishell"));
+	ft_lstadd_back12(my_env, ft_lstnewt("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"));
 	while (env_p[i])
 	{
+		if (ft_strncmp(env_p[i], "PWD=", 4) == 0 || ft_strncmp(env_p[i], "OLDPWD", 6) == 0 || ft_strncmp(env_p[i], "PATH=", 5) == 0)
+		{
+			i++;
+			continue ;
+		}
 		in_equal = ft_strlcpy(env_p[i], md_strlen(env_p[i]));
-		tmp_key = malloc(((in_equal + 1) * sizeof(char)));
+		tmp_key = gc_malloc(((in_equal + 1) * sizeof(char)), 1);
 		filling_tmp(tmp_key, env_p[i], in_equal);
 		tmp_value = NULL;
-		tmp_value = malloc((md_strlen(env_p[i]) - in_equal) + 1);
+		tmp_value = gc_malloc((md_strlen(env_p[i]) - in_equal) + 1, 1);
 		if (env_p[i][in_equal] == '=')
 			tmp_value = md_strdup(env_p[i] + in_equal + 1);
 		ft_lstadd_back12(my_env, ft_lstnewt(tmp_key, tmp_value));
-		
 		i++;
 	}
 }

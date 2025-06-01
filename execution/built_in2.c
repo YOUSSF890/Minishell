@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   built_in2.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/02 15:43:25 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/12 17:53:38 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/01 16:12:10 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ int	helper_echo(t_env *env, char *nodes_data)
 		env = env->next;
 	}
 	env = head;
-	free(trimmed);
 	return (0);
 }
 
@@ -40,7 +39,7 @@ int	is_valid_n(char *str)
 {
 	int i;
 
-	if (!str || str[0] != '-')
+	if (!str || ft_strncmp(str, "-n", 2) != 0)
 		return (0);
 	i = 1;
 	while (str[i])
@@ -80,13 +79,7 @@ int	implement_echo(t_env *env, t_node *nodes)
 	newline = check_newline_flag(&head);
 	while (head && head->type == 0)
 	{
-		if (head->data[0] == '$')
-		{
-			if (helper_echo(env, head->data) == 1)
-				return (1);
-		}
-		else
-			ft_putstr(head->data); //ft_printf
+		ft_putstr(head->data); //ft_printf
 		if (head->next && head->next->type == 0) // ft_printf
 			ft_putstr(" ");
 		head = head->next;
@@ -98,7 +91,5 @@ int	implement_echo(t_env *env, t_node *nodes)
 
 void	implement_exit(t_env **my_env, t_node **nodes)
 {
-	ft_free2(my_env);
-	ft_free1(nodes);
 	exit(0);
 }

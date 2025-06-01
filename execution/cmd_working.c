@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cmd_working.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:14:02 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/12 21:33:39 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/01 16:18:17 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ char **each_group_cmd(t_node *nodes)
 		nodes = nodes->next;
 	}
 	full_group_cmd = md_split(tmp, '|');
-	free(tmp);
 	return (full_group_cmd);
 }
 
@@ -63,7 +62,7 @@ t_node	**split_nodes_by_pipe(t_node *nodes, int *num_groups)
 
 	i = 0;
 	*num_groups = help_split_node(nodes);
-	groups = malloc((*num_groups + 1) * sizeof(t_node *));
+	groups = gc_malloc((*num_groups + 1) * sizeof(t_node *), 1);
 	if (!groups)
 		return (perror("malloc "), NULL);
 	group = NULL;
@@ -76,7 +75,7 @@ t_node	**split_nodes_by_pipe(t_node *nodes, int *num_groups)
 			group = NULL;
 		}
 		else
-			ft_lstadd_back1(&group, ft_lstnew1(head->data, head->type));
+			ft_lstadd_back1(&group, ft_lstnew2(head->data, head->type, head->tmp_file));
 		head = head->next;
 	}
 	groups[i] = group;
@@ -98,7 +97,7 @@ char	**helper_loop(char **cmd, t_node *nodes)
 			num_cmd++;
 		head = head->next;
 	}
-	cmd = malloc(((num_cmd + 1) * sizeof(char *)));
+	cmd = gc_malloc(((num_cmd + 1) * sizeof(char *)), 1);
 	if (!cmd)
 		return (perror("malloc "), NULL);
 	while (nodes)
@@ -111,7 +110,7 @@ char	**helper_loop(char **cmd, t_node *nodes)
 	return (cmd);
 }
 
-char	**loop_through_node(t_node *nodes, char **cmd, t_env *env)
+char	**loop_through_node(t_node *nodes, char **cmd, t_env *env, t_err *err)
 {
 	t_node *head;
 	int 	is_entred;
@@ -123,23 +122,25 @@ char	**loop_through_node(t_node *nodes, char **cmd, t_env *env)
 	{
 		if (head->type == 2)
 		{
-			if (implement_infile(head) == 1)
+			if (implement_infile(head, err) == 1)
 				return (NULL);
 		}
 		if (head->type == 3 && is_entred != 1)
 		{
-			if (implement_her_doc(head, env) == 1)
+			if (helper_her(head) == 1)
 				return (NULL);
+			// if (implement_her_doc(head, env) == 3)
+			// 	exit(1); // exit_code = 2
 			is_entred = 1;
 		}
 		if (head->type == 1)
 		{
-			if (implement_outfile(head) == 1)
+			if (implement_outfile(head, err) == 1)
 				return (NULL);
 		}
 		if (head->type == 4)
 		{
-			if (implement_appending(head))
+			if (implement_appending(head, err))
 				return (NULL);
 		}
 		head = head->next;
@@ -150,34 +151,37 @@ char	**loop_through_node(t_node *nodes, char **cmd, t_env *env)
 	return (cmd);
 }
 
-int	loop_through_node_builtin(t_node *nodes, t_env *env)
+int	loop_through_node_builtin(t_node *nodes, t_env *env, t_err *err)
 {
 	t_node *head;
-	int 	is_entred;
+	int in_var;
 
 	head = nodes;
-	is_entred = 0;
+	in_var = 0;
 	while (head)
 	{
 		if (head->type == 2)
 		{
-			if (implement_infile(head) == 1)
+			in_var = implement_infile(head, err);
+			if (in_var == 1)
 				return (1);
+			else if (in_var == 3)
+				return (3);
 		}
-		if (head->type == 3 && is_entred != 1)
-		{
-			if (implement_her_doc(head, env) == 1)
-				return (1);
-			is_entred = 1;
-		}
+		// if (head->type == 3 && is_entred != 1)
+		// {
+		// 	if (implement_her_doc(head, env, err) == 1)
+		// 		return (1);
+		// 	is_entred = 1;
+		// }
 		if (head->type == 1)
 		{
-			if (implement_outfile(head) == 1)
+			if (implement_outfile(head, err) == 1)
 				return (1);
 		}
 		if (head->type == 4)
 		{
-			if (implement_appending(head))
+			if (implement_appending(head, err))
 				return (1);
 		}
 		head = head->next;

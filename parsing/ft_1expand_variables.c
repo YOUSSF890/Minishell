@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:51:43 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/27 18:20:07 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:34:23 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ char	*env_key(t_ha *ha, char *str)
 			break ;
 		cpy_index++;
 	}
-	src = malloc(sizeof(char) * (len_key + 1));
-	if (!src)
-		return (NULL);
+	src = gc_malloc(len_key + 1, 1);
 	while (ft_Check_after_dollar(str[ha->read_index]))
 	{
 		src[dest_index++] = str[(ha->read_index)++];
@@ -128,5 +126,4 @@ void	copy_env_value(t_node *lst, t_env *my_env, char *dap, t_ha *ha)
 	}
 	if (ft_strncmp1(src, "?", 1))
 		ft_functin_env(dap, ha);
-	free(src);
 }

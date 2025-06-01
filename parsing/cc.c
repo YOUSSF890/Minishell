@@ -18,7 +18,7 @@ char	*env_key1(t_ha *ha, char *str,int *m)
 			break ;
 		cpy_index++;
 	}
-	src = malloc(sizeof(char) * (len_key + 1));
+	src = gc_malloc(sizeof(char) * (len_key + 1), 1);
 	if (!src)
 		return (NULL);
 	while (ft_Check_after_dollar(str[ha->read_index]))
@@ -83,7 +83,6 @@ void	copy_env_value1(t_node *lst, t_env *my_env, t_ha *ha, int *m)
 	}
 	// if (ft_strncmp1(src, "?", 1))
 	// 	ft_functin_env(dap, ha);
-	free(src);
 }
 
 

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 11:33:48 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/27 20:06:52 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:47:21 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,9 +31,7 @@ t_list	*ft_lstnew(char *content)
 {
 	t_list	*new_node;
 
-	new_node = malloc(sizeof(t_list));
-	if (!new_node)
-		return (free(content), NULL);
+	new_node = gc_malloc(sizeof(t_list), 1);
 	new_node->content = content;
 	new_node->next = NULL;
 	return (new_node);
@@ -63,7 +61,9 @@ size_t	md_strlen(char *s)
 		return (0);
 	i = 0;
 	while (s[i])
+	{
 		i++;
+	}
 	return (i);
 }
 

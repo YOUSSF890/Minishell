@@ -6,21 +6,21 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:09:05 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/17 15:06:19 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 16:13:26 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	md_free(int **num)
-{
-	int i;
+// void	md_free(int **num)
+// {
+// 	int i;
 
-	i = 0;
-	while (num[i])
-		free(num[i++]);
-	free(num);
-}
+// 	i = 0;
+// 	while (num[i])
+// 		free(num[i++]);
+// 	free(num);
+// }
 
 // void print_node(t_env *my_env)
 // {
@@ -82,7 +82,7 @@ char	*md_itoa(int n)
 
 	num = n;
 	len = get_length(n);
-	result = (char *)malloc(len + 1);
+	result = (char *)gc_malloc(len + 1, 1);
 	if (!result)
 		return (NULL);
 	result[len] = '\0';
@@ -108,12 +108,11 @@ char	*random_num()
 	char		*num_str;
 	char		*new_str;
 
-	tmp = md_strdup(".tmp_");
+	tmp = md_strdup("/tmp/.tmp_");
 	if (!tmp)
 		return (NULL);
 	num_str = md_itoa(i);
-	new_str = md_strdup(ft_strcat(tmp, num_str));
-	free(tmp);
+	new_str = md_strjoin(tmp, num_str);
 	i++;
 	return (new_str);
 }

@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:23:30 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/05/27 14:51:00 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 18:18:58 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	count_string(char *input, int i, t_handel *handel)
 	return (n);
 }
 
-int	handel_qoutation(char *input, int *i, t_handel *handel)
+void	handel_qoutation(char *input, int *i, t_handel *handel)
 {
 	if (input[handel->a] == '\"' && input[*i] == '\"')
 		(handel->quote_count)++;
@@ -56,10 +56,10 @@ int	handel_qoutation(char *input, int *i, t_handel *handel)
 		if (!input[*i]) // break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
 		{
 			printf("eroor\n");
-			return (0);
+			gc_malloc(0,0);
+			exit(1);
 		}
 	}
-	return (1);
 }
 
 void	handle_multiple_quotes(char *input, int *i, t_handel *handel)
