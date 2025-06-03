@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:17:33 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 18:49:13 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 22:41:58 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void	ft_handle_double_single(char *input, int *i, t_list **lst)
 	t_handel	*handel;
 
 	handel = helper_variables();
-	handel->temp = gc_malloc(count_string(input, *i, handel) + 1, 1); //sizeof(char) * (count_string(input, *i, handel) + 1
+	handel->temp = gc_malloc(count_string(input, *i, handel) + 1, 1);
 	handel->a = *i;
 	while (input[*i])
 	{

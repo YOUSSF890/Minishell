@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 11:33:48 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 18:47:21 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 21:45:27 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,10 @@ size_t	ft_strlcpy(char *src, size_t dstsize)
 size_t	md_strlen(char *s)
 {
 	size_t	i;
-	if(!s)
-		return (0);
+
 	i = 0;
+	if (!s)
+		return (0);
 	while (s[i])
 	{
 		i++;
@@ -67,7 +68,7 @@ size_t	md_strlen(char *s)
 	return (i);
 }
 
-int ft_strlen(int a,char *dap)
+int	ft_strlen(int a, char *dap)
 {
 	int	t;
 	int	len;

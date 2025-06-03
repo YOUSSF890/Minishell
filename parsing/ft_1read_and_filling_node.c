@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:23:30 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 18:18:58 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/01 23:23:34 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ int	count_string(char *input, int i, t_handel *handel)
 			(quote_count)++;
 		if (input[handel->a] == '\'' && input[i] == '\'')
 			(q)++;
-		if ((quote_count % 2 == 1 && input[handel->a] == '\"' && (input[i + 1] == ' ' || input[i + 1] == '\t' || input[i + 1] == '\0')) || (q % 2 == 1 && input[handel->a] == '\''
-				&& (input[i + 1] == ' ' || input[i + 1] == '\t' || input[i + 1] == '\0')))
+		if ((quote_count % 2 == 1 && input[handel->a] == '\"' && (input[i + 1] == ' '  || input[i + 1] == '\t' || input[i + 1] == '\0'))
+			|| (q % 2 == 1 && input[handel->a] == '\'' && (input[i + 1] == ' ' || input[i + 1] == '\t' || input[i + 1] == '\0')))
 		{
 			n++;
 			break ;
@@ -48,7 +48,8 @@ void	handel_qoutation(char *input, int *i, t_handel *handel)
 	while ((handel->quote_count % 2 == 0 && input[handel->a] == '\"')
 		|| (handel->q % 2 == 0 && input[handel->a] == '\''))
 	{
-		if(*i != handel->a && ((input[*i] == '\"' && input[handel->a] == '\"') || (input[*i] == '\'' && input[handel->a] == '\'')))
+		if (*i != handel->a && ((input[*i] == '\"' && input[handel->a] == '\"')
+				|| (input[*i] == '\'' && input[handel->a] == '\'')))
 		{
 			break ;
 		}

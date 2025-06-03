@@ -41,13 +41,14 @@ int	handel_qoutation1(char *input, int *i, t_handel *handel, int *col)
 	while ((handel->quote_count % 2 == 0 && input[handel->a] == '\"')
 		|| (handel->q % 2 == 0 && input[handel->a] == '\''))
 	{
-		if(*i != handel->a && ((input[*i] == '\"' && input[handel->a] == '\"') || (input[*i] == '\'' && input[handel->a] == '\'')))
+		if (*i != handel->a && ((input[*i] == '\"' && input[handel->a] == '\"')
+				|| (input[*i] == '\'' && input[handel->a] == '\'')))
 		{
 			break ;
 		}
 		(*i)++;
 		(*col)++;
-		if (!input[*i]) // break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
+		if (!input[*i])// break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
 		{
 			printf("eroor\n");
 			return (0);
@@ -71,7 +72,7 @@ int	ft_ft1(char *input, int *i, t_handel *handel, int *col)
 	return (1);
 }
 
-int count_handle_str(char *input, int i)
+int	count_handle_str(char *input, int i)
 {
 	t_handel	*handel;
 	int			col;
@@ -83,7 +84,6 @@ int count_handle_str(char *input, int i)
 	{
 		if (input[i] == '\"' || input[i] == '\'')
 		{
-			exit(1);
 			if (ft_ft1(input, &i, handel, &col) == 0)
 				return (0);
 		}

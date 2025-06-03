@@ -6,33 +6,33 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:51:43 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 18:34:23 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/02 11:45:22 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_functin_env(char *dap, t_ha *ha)
+void	ft_functin_env(char *dap, t_ha *ha, t_err *err)
 {
 	char	*str;
 	int		i;
 
 	i = 0;
-	// int num_err = 0;
-	str = "0"; // ft_itoa(num_err);
-	while(str[i])
+	str = md_itoa(err->err_status);
+	while (str[i])
 	{
 		dap[(ha->dest_index)++] = str[i++];
 	}
 }
-void store_dap(char *dap, char *str, t_ha *ha, int *i)
+
+void	store_dap(char *dap, char *str, t_ha *ha, int *i)
 {
-	if(str[*i] == '\"')
+	if (str[*i] == '\"')
 	{
 		dap[(ha->dest_index)++] = 14;
 		(*i)++;
 	}
-	else if(str[*i] == '\'')
+	else if (str[*i] == '\'')
 	{
 		dap[(ha->dest_index)++] = 15;
 		(*i)++;
@@ -60,8 +60,6 @@ void	copy_to_dap(char *dap, char *str, t_ha *ha)
 					dap[(ha->dest_index)++] = str[i - 1];
 				store_dap(dap, str, ha, &i);
 			}
-			// if (str[i] == '\"')
-			// 	m++;
 		}
 		else
 		{
@@ -83,8 +81,8 @@ char	*env_key(t_ha *ha, char *str)
 	while (ft_Check_after_dollar(str[cpy_index]))
 	{
 		len_key++;
-		if (str[cpy_index - 1] == '$' && ((str[cpy_index] >= 48 && str[cpy_index] <= 57)
-				|| str[cpy_index] == '?'))
+		if (str[cpy_index - 1] == '$' && ((str[cpy_index] >= 48
+				&& str[cpy_index] <= 57) || str[cpy_index] == '?'))
 			break ;
 		cpy_index++;
 	}
@@ -92,7 +90,7 @@ char	*env_key(t_ha *ha, char *str)
 	while (ft_Check_after_dollar(str[ha->read_index]))
 	{
 		src[dest_index++] = str[(ha->read_index)++];
-		if(((str[ha->read_index - 1] >= 48 && str[ha->read_index - 1] <= 57)
+		if (((str[ha->read_index - 1] >= 48 && str[ha->read_index - 1] <= 57)
 			|| str[ha->read_index - 1] == '?') && str[ha->read_index - 2] == '$')
 			break ;
 	}
@@ -100,7 +98,7 @@ char	*env_key(t_ha *ha, char *str)
 	return (src);
 }
 
-void	copy_env_value(t_node *lst, t_env *my_env, char *dap, t_ha *ha)
+void	copy_env_value(t_node *lst, t_env *my_env, char *dap, t_ha *ha, t_err *err)
 {
 	int		b;
 	char	*src;
@@ -125,5 +123,5 @@ void	copy_env_value(t_node *lst, t_env *my_env, char *dap, t_ha *ha)
 		}
 	}
 	if (ft_strncmp1(src, "?", 1))
-		ft_functin_env(dap, ha);
+		ft_functin_env(dap, ha, err);
 }
