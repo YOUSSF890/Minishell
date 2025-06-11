@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_work_of_exec.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 17:07:29 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/02 18:29:50 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/10 19:56:49 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,28 +41,28 @@ char **load_env(t_env *my_env)
 	return (enverment);
 }
 
-void	catch_signals(t_err *err, pid_t pid)
+void	catch_signals(t_ha *err, pid_t pid)
 {
 	int status;
 	pid_t wpid;
+	
 	while ((wpid = wait(&status)) > 0)
 	{
 		if (wpid == pid)
 		{
 			if (WIFEXITED(status))
-			err->err_status = WEXITSTATUS(status);
+				err->err_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				err->err_status = 128 + WTERMSIG(status);
 		}
-		else if (WIFSIGNALED(status))
-			err->err_status = 128 + WTERMSIG(status);
 	}
 }
 
-void	spliting_nodes_hd(t_md *md, t_node *nodes, t_env *my_env, t_err *err)
+int	spliting_nodes_hd(t_md *md, t_node *nodes, t_env *my_env, t_ha *err)
 {
-	if (implement_her_doc(nodes, my_env, err) == 1)
+	if (implement_her_doc(nodes, my_env, err) == -333)
 	{
-		gc_malloc(0, 0);
-		exit(1);
+		return (-333);
 	}
 	md->groups = split_nodes_by_pipe(nodes, &md->num_groups);
 	if (!md->groups)
@@ -70,15 +70,18 @@ void	spliting_nodes_hd(t_md *md, t_node *nodes, t_env *my_env, t_err *err)
 		gc_malloc(0, 0);
 		exit(1);
 	}
+	return (0);
 }
 
-void set_md(t_md **md, t_node *nodes, t_env *my_env, t_err *err)
+int set_md(t_md **md, t_node *nodes, t_env *my_env, t_ha *err)
 {
 	*md = gc_malloc(sizeof(t_md), 1);
 	(*md)->prev_fd = -1;
 	(*md)->i = 0;
 	(*md)->pid = 0;
-	spliting_nodes_hd(*md, nodes, my_env, err);
+	if (spliting_nodes_hd(*md, nodes, my_env, err) == -333)
+		return (-333);
+	return (0);
 }
 
 void	parent_work(t_md *md)
@@ -91,8 +94,9 @@ void	parent_work(t_md *md)
 	md->i++;
 }
 
-void	forking_pip(t_md *md, t_env **my_env, t_err *err)
+int	forking_pip(t_md *md, t_env **my_env, t_ha *err, t_node *nodes)
 {
+	int her;
 	if (md->prev_fd != -1)
 	{
 		dup2(md->prev_fd, STDIN_FILENO);
@@ -102,13 +106,18 @@ void	forking_pip(t_md *md, t_env **my_env, t_err *err)
 		dup2(md->pip_fd[1], STDOUT_FILENO);
 	close(md->pip_fd[1]);
 	close(md->pip_fd[0]);
-	md->cmd = loop_through_node(md->groups[md->i], NULL, *my_env, err);
+	her = loop_through_node_builtin(nodes, *my_env, err);
+	if (her == 1)
+		exit(1);
+	else if (her == 3)
+		return (3);
+	md->cmd = helper_loop(md->cmd, md->groups[md->i]);
 	if (!md->cmd)
 		exit(1);
 	md->cmd_path = is_accessable(fetch_path(*my_env), md->cmd[0]);
-	if (!md->cmd_path)
+	if (!md->cmd_path || !*md->cmd[0])
 	{
-		printf("mhd %s: command not found\n", md->cmd[0]);
+		ft_printf("mhd %s: command not found\n", md->cmd[0]);
 		exit(127);
 	}
 	if (!*md->cmd)
@@ -118,7 +127,7 @@ void	forking_pip(t_md *md, t_env **my_env, t_err *err)
 	exit(127);
 }
 
-void	helper_built(t_md *md, t_err *err)
+void	helper_built(t_md *md, t_ha *err)
 {
 	md->cmd2 = loop_through_node_cmd(md->groups[md->i]);
 	if (!md->cmd2)
@@ -129,12 +138,13 @@ void	helper_built(t_md *md, t_err *err)
 	err->err_status = 0;
 }
 
-int	piping_forking(t_node **nodes, t_env **my_env, t_err *err)
+int	piping_forking(t_node **nodes, t_env **my_env, t_ha *err)
 {
 	t_md	*md;
 
 	md = NULL;
-	set_md(&md, *nodes, *my_env, err);
+	if (set_md(&md, *nodes, *my_env, err) == -333)
+		return (-333);
 	while (md->i < md->num_groups)
 	{
 		helper_built(md, err);
@@ -147,11 +157,18 @@ int	piping_forking(t_node **nodes, t_env **my_env, t_err *err)
 		}
 		if (pipe(md->pip_fd) == -1)
 			return (-1);
+		g_sig_md = 2;
 		md->id = fork();
 		if (md->id == -1)
 			return (-1);
 		if (md->id == 0)
-			forking_pip(md, my_env, err);
+		{
+			if (forking_pip(md, my_env, err, *nodes) == 3)
+			{
+				md->i++;
+				exit(0);
+			}
+		}
 		else
 			parent_work(md);
 	}

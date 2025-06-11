@@ -6,7 +6,7 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 16:29:50 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/03 11:54:49 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/11 12:53:56 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,20 @@ int	count_value(int i, t_node *nodes, t_env *my_env)
 	return (a);
 }
 
+void	ft_youssef(t_env *cpy_env1, t_node *nodes, int *i)
+{
+	ft_lstadd_back_env(&cpy_env1, ft_lstnew_env());
+	while (cpy_env1)
+	{
+		if (!cpy_env1->next)
+		{
+			cpy_env1->key = ft_cpy_key(*i, nodes);
+			cpy_env1->value = ft_cpy_value(i, nodes, cpy_env1);
+		}
+		cpy_env1 = cpy_env1->next;
+	}
+}
+
 void	add_value_export(t_env *my_env, t_node *nodes)
 {
 	t_env	*cpy_env;
@@ -71,20 +85,69 @@ void	add_value_export(t_env *my_env, t_node *nodes)
 		}
 		if (cpy_env == NULL)
 		{
-			ft_lstadd_back_env(&cpy_env1, ft_lstnew_env());
-			while (cpy_env1)
-			{
-				if (!cpy_env1->next)
-				{
-					cpy_env1->key = ft_cpy_key(i, nodes);
-					cpy_env1->value = ft_cpy_value(&i, nodes, cpy_env1);
-				}
-				cpy_env1 = cpy_env1->next;
-			}
+			ft_youssef(cpy_env1, nodes, &i);
+			// ft_lstadd_back_env(&cpy_env1, ft_lstnew_env());
+			// while (cpy_env1)
+			// {
+			// 	if (!cpy_env1->next)
+			// 	{
+			// 		cpy_env1->key = ft_cpy_key(i, nodes);
+			// 		cpy_env1->value = ft_cpy_value(&i, nodes, cpy_env1);
+			// 	}
+			// 	cpy_env1 = cpy_env1->next;
+			// }
 		}
 		nodes = nodes->next;
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+// void	add_value_export(t_env *my_env, t_node *nodes)
+// {
+// 	t_env	*cpy_env;
+// 	t_env	*cpy_env1;
+// 	int		i;
+
+// 	nodes = nodes->next;
+// 	while (nodes)
+// 	{
+// 		i = 0;
+// 		cpy_env = my_env;
+// 		cpy_env1 = my_env;
+// 		while (cpy_env)
+// 		{
+// 			if (!ft_strcmp(cpy_env->key, ft_cpy_key(i, nodes)))
+// 			{
+// 				cpy_env->value = ft_cpy_value(&i, nodes, cpy_env);
+// 				break ;
+// 			}
+// 			cpy_env = cpy_env->next;
+// 		}
+// 		if (cpy_env == NULL)
+// 		{
+// 			ft_lstadd_back_env(&cpy_env1, ft_lstnew_env());
+// 			while (cpy_env1)
+// 			{
+// 				if (!cpy_env1->next)
+// 				{
+// 					cpy_env1->key = ft_cpy_key(i, nodes);
+// 					cpy_env1->value = ft_cpy_value(&i, nodes, cpy_env1);
+// 				}
+// 				cpy_env1 = cpy_env1->next;
+// 			}
+// 		}
+// 		nodes = nodes->next;
+// 	}
+// }
 
 int	implement_export(t_env *my_env, t_node *nodes)
 {

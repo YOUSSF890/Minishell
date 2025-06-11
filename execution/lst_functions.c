@@ -6,7 +6,7 @@
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 11:49:42 by mradouan          #+#    #+#             */
-/*   Updated: 2025/05/12 16:40:31 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/10 09:58:44 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,19 @@
 // }
 
 
-void	ft_putstr(char *str)
+void	md_putstr(char *str)
 {
 	while (*str != '\0')
 	{
 		write(1, str, 1);
 		str++;
 	}
+}
+
+void	alloc_arm(t_var	**arm)
+{
+	*arm = gc_malloc(sizeof(t_var), 1);
+	(*arm)->in_var = 0;
+	(*arm)->out_var = 0;
+	(*arm)->append_var = 0;
 }

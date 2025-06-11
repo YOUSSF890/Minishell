@@ -1,31 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fetching.c                                         :+:      :+:    :+:   */
+/*   ft_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 16:26:39 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 10:04:28 by mradouan         ###   ########.fr       */
+/*   Created: 2024/11/27 12:36:26 by mradouan          #+#    #+#             */
+/*   Updated: 2025/06/04 16:31:36 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	**fetch_path(t_env *my_env)
+int	ft_putchar(char c)
 {
-	char	*path_value;
-	char	**paths;
+	write(1, &c, 1);
+	return (1);
+}
 
-	while (my_env)
+int	ft_putstr(char *str)
+{
+	int	i;
+
+	i = 0;
+	if (!str)
+		return (write(1, "(null)", 6));
+	while (str[i])
 	{
-		if (ft_strncmp(my_env->key, "PATH", 4) == 0)
-		{
-			path_value = my_env->value;
-			paths = md_split(path_value, ':');
-			return (paths);
-		}
-		my_env = my_env->next;
+		write(1, &str[i], 1);
+		i++;
 	}
-	return (NULL);
+	return (i);
 }

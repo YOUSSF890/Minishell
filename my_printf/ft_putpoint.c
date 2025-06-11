@@ -1,31 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fetching.c                                         :+:      :+:    :+:   */
+/*   ft_putpoint.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 16:26:39 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 10:04:28 by mradouan         ###   ########.fr       */
+/*   Created: 2024/11/30 12:37:18 by mradouan          #+#    #+#             */
+/*   Updated: 2025/06/04 16:31:41 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	**fetch_path(t_env *my_env)
+int	ft_putpoint(void *ptr)
 {
-	char	*path_value;
-	char	**paths;
+	unsigned long	address;
+	int				count;
 
-	while (my_env)
-	{
-		if (ft_strncmp(my_env->key, "PATH", 4) == 0)
-		{
-			path_value = my_env->value;
-			paths = md_split(path_value, ':');
-			return (paths);
-		}
-		my_env = my_env->next;
-	}
-	return (NULL);
+	address = (unsigned long)ptr;
+	count = ft_putstr("0x");
+	return (count + ft_puthex(address, "0123456789abcdef"));
 }

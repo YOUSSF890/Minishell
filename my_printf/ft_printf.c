@@ -1,31 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fetching.c                                         :+:      :+:    :+:   */
+/*   ft_printf.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 16:26:39 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 10:04:28 by mradouan         ###   ########.fr       */
+/*   Created: 2024/11/27 11:58:14 by mradouan          #+#    #+#             */
+/*   Updated: 2025/06/04 16:31:53 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-char	**fetch_path(t_env *my_env)
+int	ft_printf(const char *format, ...)
 {
-	char	*path_value;
-	char	**paths;
+	va_list		args;
+	int			count;
+	int			i;
 
-	while (my_env)
+	va_start(args, format);
+	i = 0;
+	count = 0;
+	while (format[i])
 	{
-		if (ft_strncmp(my_env->key, "PATH", 4) == 0)
+		if (format[i] == '%')
 		{
-			path_value = my_env->value;
-			paths = md_split(path_value, ':');
-			return (paths);
+			i++;
+			if (format[i] == '\0')
+				break ;
+			count += mix_printer(format[i], args);
 		}
-		my_env = my_env->next;
+		else
+			count += ft_putchar(format[i]);
+		i++;
 	}
-	return (NULL);
+	va_end(args);
+	return (count);
 }

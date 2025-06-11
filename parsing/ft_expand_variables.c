@@ -6,13 +6,13 @@
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/17 12:13:58 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/03 23:13:58 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/11 12:32:51 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	count_cmd(t_node *lst, t_env *my_env, t_err *err)
+int	count_cmd(t_node *lst, t_env *my_env, t_ha *err)
 {
 	t_ha	*halel;
 
@@ -20,14 +20,14 @@ int	count_cmd(t_node *lst, t_env *my_env, t_err *err)
 	while (lst->data[halel->read_index])
 	{
 		if (lst->data[halel->read_index] == '\''
-			&& halel->dablla_qoute % 2 == 0)
-			halel->singl_qoute++;
+			&& halel->dbl_qte % 2 == 0)
+			halel->snl_qte++;
 		else if (lst->data[halel->read_index] == '\"'
-			&& halel->singl_qoute % 2 == 0)
-			halel->dablla_qoute++;
+			&& halel->snl_qte % 2 == 0)
+			halel->dbl_qte++;
 		if (ft_Check_dollar(lst, halel))
 		{
-			if (halel->dablla_qoute % 2 == 1)
+			if (halel->dbl_qte % 2 == 1)
 				numstr_expand_with_quote(lst, my_env, halel, err);
 			else
 				numstr_expand_without_quote(lst, my_env, halel, err);
@@ -41,47 +41,29 @@ int	count_cmd(t_node *lst, t_env *my_env, t_err *err)
 	return (halel->dest_index);
 }
 
-
-void	count_dollare(t_ha	*ha, char *lst)
-{
-	int	t;
-
-	t = 0;
-	while (lst[ha->read_index] == '$')
-	{
-		(ha->read_index)++;
-		t++;
-	}
-	if (t % 2 == 1)
-	{
-		(ha->read_index)--;
-	}
-}
-
 void	handle_dollar_quote_case(t_node *lst, t_ha *ha, char *dap)
 {
-	if (lst->data[ha->read_index + 1] == '\'' && ha->dablla_qoute % 2 == 0)
-		ha->quote_count = ha->singl_qoute + 1;
-	else if (lst->data[ha->read_index + 1] == '\"' && ha->singl_qoute % 2 == 0)
-		ha->quote_count = ha->dablla_qoute + 1;
+	if (lst->data[ha->read_index + 1] == '\'' && ha->dbl_qte % 2 == 0)
+		ha->quote_count = ha->snl_qte + 1;
+	else if (lst->data[ha->read_index + 1] == '\"' && ha->snl_qte % 2 == 0)
+		ha->quote_count = ha->dbl_qte + 1;
 	if (ha->quote_count % 2 == 1)
 		ha->read_index++;
 	else
 		dap[ha->dest_index++] = lst->data[ha->read_index++];
 }
 
-void	expanding_function(t_node *lst, t_node **tmp, t_env *my_env, t_err *err)
+void	expanding_function(t_node *lst, t_env *my_env, t_ha *ha)
 {
 	char	*dap;
-	t_ha	*ha;
 
-	ha = helper_varia();
-	dap = gc_malloc(count_cmd1(lst, my_env, err) + 1, 1);
+	ha = helper_varia(ha);
+	dap = gc_malloc(count_cmd1(lst, my_env, ha) + 1, 1);
 	while (lst->data[ha->read_index])
 	{
 		conut_dabel_singel_qoutition(lst->data[ha->read_index], ha);
 		if (ft_Check_dollar(lst, ha))
-			copy_env_value(lst, my_env, dap, ha, err);
+			copy_env_value(lst, my_env, dap, ha);
 		else
 		{
 			if (lst->data[ha->read_index] == '$'
@@ -96,7 +78,7 @@ void	expanding_function(t_node *lst, t_node **tmp, t_env *my_env, t_err *err)
 		}
 	}
 	dap[ha->dest_index] = '\0';
-	fill_up_node(dap, tmp, lst);
+	fill_up_node(dap, lst);
 }
 
 void	is_quoted(t_node *lst)
@@ -117,12 +99,10 @@ void	is_quoted(t_node *lst)
 	}
 }
 
-void	expand_variables(t_node *lst, t_node **tmp,t_env *my_env, t_err *err)
+void	expand_variables(t_node *lst, t_env *my_env, t_ha *err)
 {
 	t_ha	*ha;
-	// t_node *tmp;
 
-	// tmp = NULL;
 	ha = helper_varia();
 	while (lst)
 	{
@@ -131,9 +111,9 @@ void	expand_variables(t_node *lst, t_node **tmp,t_env *my_env, t_err *err)
 		{
 			conut_dabel_singel_qoutition(lst->data[ha->read_index], ha);
 			if (lst->data[ha->read_index] == '$'
-				&& (ha->singl_qoute % 2 == 0) && lst->type != 3)
+				&& (ha->snl_qte % 2 == 0) && lst->type != 3)
 			{
-				expanding_function(lst, tmp, my_env, err);
+				expanding_function(lst, my_env, err);
 				break ;
 			}
 			else if (lst->type == 3)
@@ -142,7 +122,6 @@ void	expand_variables(t_node *lst, t_node **tmp,t_env *my_env, t_err *err)
 			}
 			ha->read_index++;
 		}
-		*tmp = lst;
 		lst = lst->next;
 	}
 }

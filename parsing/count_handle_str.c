@@ -1,12 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   count_handle_str.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/06/09 22:02:37 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/11 12:30:51 by ylagzoul         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 void	handle_multiple_quotes1(char *input, int *i, t_handel *handel, int *col)
 {
+	(*col)++;
 	if (((input[*i] == '\"') || input[*i] == '\'') && input[(*i) + 1])
 	{
 		(*i)++;
-		(*col)++;
-		if (input[*i]) //  echo "$HOME$"$"youssef"    input[*i] = '\0'  او هدي *i++ حيت هدي نزيد ب
+		if (input[*i])
 		{
 			handel->a = *i;
 			if (input[handel->a] == '\"')
@@ -25,11 +37,7 @@ void	handle_multiple_quotes1(char *input, int *i, t_handel *handel, int *col)
 		}
 	}
 	else
-	{
-		(*i)++;
-		(*col)++;
-		handel->a = *i;
-	}
+		handel->a = ++(*i);
 }
 
 int	handel_qoutation1(char *input, int *i, t_handel *handel, int *col)
@@ -48,7 +56,7 @@ int	handel_qoutation1(char *input, int *i, t_handel *handel, int *col)
 		}
 		(*i)++;
 		(*col)++;
-		if (!input[*i])// break; دشي علاش مع توصل \0 دير "ls d""skfjfe حيت هدي تبقى تقرى لا م نهاية فية حالة كان
+		if (!input[*i])
 		{
 			printf("eroor\n");
 			return (0);
