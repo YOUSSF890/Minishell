@@ -6,100 +6,75 @@
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/12 11:49:42 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 09:58:44 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:12:05 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
+int	has_actual_command(t_node *group)
+{
+	while (group)
+	{
+		if (group->type == 0)
+			return (1);
+		group = group->next;
+	}
+	return (0);
+}
 
-// t_node	*ft_lstneww(char *lst, int typ_e)
-// {
-// 	t_node	*ptr;
+void	check_cmd(t_md *md, t_ha *err)
+{
+	if (!has_actual_command(md->groups[md->i])
+		&& (md->groups[0] && md->groups[0]->type != -1))
+	{
+		close(err->saved_fd);
+		gc_malloc(0, 0);
+		exit(0);
+	}
+}
 
-// 	ptr = (t_node *) malloc(sizeof(t_node));
-// 	if (!ptr)
-// 		return (NULL);
-// 	ptr->data = lst;
-// 	ptr->type = typ_e;
-// 	ptr->next = NULL;
-// 	return (ptr);
-// }
+int	check_exec_errors(char *path)
+{
+	struct stat	buf;
 
+	if (stat(path, &buf) == -1)
+	{
+		ft_print_erorr("minishell: ", path,
+			": No such file or directory\n", NULL);
+		return (127);
+	}
+	if (S_ISDIR(buf.st_mode))
+	{
+		ft_print_erorr("minishell: ", path, ": Is a directory\n", NULL);
+		return (126);
+	}
+	if (access(path, X_OK) == -1)
+	{
+		ft_print_erorr("minishell: ", path, ": Permission denied\n", NULL);
+		return (126);
+	}
+	return (0);
+}
 
-// t_cmds	*ft_lstlas(t_cmds *lst)
-// {
-// 	t_cmds	*last;
+int	md_isalpha(char *str)
+{
+	int	i;
 
-// 	last = lst;
-// 	while (last->next)
-// 		last = last->next;
-// 	return (last);
-// }
-
-// t_node	*ft_lstlastt(t_node *lst)
-// {
-// 	t_node	*last;
-
-// 	last = lst;
-// 	while (last->next)
-// 		last = last->next;
-// 	return (last);
-// }
-
-// void	ft_lstadd_back_m(t_env **lst, t_env *new)
-// {
-// 	t_env	*last;
-
-// 	if (new == NULL)
-// 	return ;
-// 	if (*lst == NULL)
-// 		*lst = new;
-// 	else
-// 	{
-// 		last = ft_lstlast(*lst);
-// 		last->next = new;
-// 	}
-// }
-
-// void	ft_lstadd_bck(t_cmds **lst, t_cmds *new)
-// {
-// 	t_cmds	*last;
-
-// 	if (new == NULL)
-// 	return ;
-// 	if (*lst == NULL)
-// 		*lst = new;
-// 	else
-// 	{
-// 		last = ft_lstlas(*lst);
-// 		last->next = new;
-// 	}
-// }
-
-// void	ft_lstadd_backk(t_node **lst, t_node *new)
-// {
-// 	t_node	*last;
-
-// 	if (new == NULL)
-// 	return ;
-// 	if (*lst == NULL)
-// 		*lst = new;
-// 	else
-// 	{
-// 		last = ft_lstlastt(*lst);
-// 		last->next = new;
-// 	}
-// }
-
-// void	ft_lstadd_front(t_env **lst, t_env *new)
-// {
-// 	if (new == NULL)
-// 		return ;
-// 	new->next = *lst;
-// 	*lst = new;
-// }
-
+	i = 0;
+	while (str && str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if ((str[i] >= 'A' && str[i] <= 'Z')
+			|| (str[i] >= 'a' && str[i] <= 'z')
+			|| (str[i] == '+')
+			|| (str[i] == '-'))
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 void	md_putstr(char *str)
 {
@@ -108,12 +83,4 @@ void	md_putstr(char *str)
 		write(1, str, 1);
 		str++;
 	}
-}
-
-void	alloc_arm(t_var	**arm)
-{
-	*arm = gc_malloc(sizeof(t_var), 1);
-	(*arm)->in_var = 0;
-	(*arm)->out_var = 0;
-	(*arm)->append_var = 0;
 }

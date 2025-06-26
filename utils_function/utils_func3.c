@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_func3.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 16:09:05 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/03 11:22:09 by mradouan         ###   ########.fr       */
+/*   Created: 2025/06/18 11:25:14 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/18 11:25:15 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,21 +50,22 @@ char	*md_itoa(int n)
 	char	*result;
 	int		len;
 	long	num;
+	int		is_negative;
 
 	num = n;
 	len = get_length(n);
 	result = (char *)gc_malloc(len + 1, 1);
-	if (!result)
-		return (NULL);
 	result[len] = '\0';
+	is_negative = 0;
 	if (num < 0)
 	{
+		is_negative = 1;
 		result[0] = '-';
 		num = -num;
 	}
-	while (len-- > 0)
+	while (--len >= 0)
 	{
-		if (result[len] == '-')
+		if (is_negative && len == 0)
 			break ;
 		result[len] = (num % 10) + '0';
 		num /= 10;
@@ -79,6 +80,9 @@ char	*random_num(void)
 	char		*num_str;
 	char		*new_str;
 
+	new_str = NULL;
+	num_str = NULL;
+	tmp = NULL;
 	tmp = md_strdup("/tmp/tmp_");
 	if (!tmp)
 		return (NULL);

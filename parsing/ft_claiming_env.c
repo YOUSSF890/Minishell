@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_claiming_env.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 12:12:48 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 16:20:21 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:23:11 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/22 23:32:44 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,26 @@ void	filling_tmp(char *key, char *env, int size)
 	key[i] = '\0';
 }
 
-void	claiming_env(char **env_p, t_env **my_env)
+void	claiming_env_helper(t_env **my_env)
+{
+	ft_lstadd_back12(my_env, ft_lstnewt("PATH",
+			"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"));
+	ft_lstadd_back12(my_env, ft_lstnewt("_", "./minishell"));
+	(*my_env)->cww = NULL;
+	save_cwd(my_env);
+}
+
+int	check_env(char *env_p)
+{
+	if (!ft_strncmp(env_p, "PWD=", 4)
+		|| !ft_strncmp(env_p, "OLDPWD", 6)
+		|| !ft_strncmp(env_p, "_=", 2)
+		|| !ft_strncmp(env_p, "PATH=", 5))
+		return (1);
+	return (0);
+}
+
+void	claiming_env(char **env_p, t_env **my_env, int is_entered)
 {
 	char	*tmp_key;
 	char	*tmp_value;
@@ -33,12 +52,11 @@ void	claiming_env(char **env_p, t_env **my_env)
 	int		i;
 
 	i = 0;
-	ft_lstadd_back12(my_env, ft_lstnewt("OLDPWD", "/home/mradouan/Desktop/minishell"));
-	ft_lstadd_back12(my_env, ft_lstnewt("PWD", "/home/mradouan/Desktop/minishell"));
-	ft_lstadd_back12(my_env, ft_lstnewt("PATH", "/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"));
+	if (!is_entered)
+		claiming_env_helper(my_env);
 	while (env_p[i])
 	{
-		if (ft_strncmp(env_p[i], "PWD=", 4) == 0 || ft_strncmp(env_p[i], "OLDPWD", 6) == 0 || ft_strncmp(env_p[i], "PATH=", 5) == 0)
+		if (check_env(env_p[i]) == 1)
 		{
 			i++;
 			continue ;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_dollar_heredoc.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 14:55:54 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 20:13:17 by ylagzoul         ###   ########.fr       */
+/*   Updated: 2025/06/19 17:02:44 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ void	copy_env_value_heredoc(t_node *lst, t_env *my_env, char *dap, t_ha *err)
 			break ;
 		}
 	}
-	if (ft_strncmp1(src, "?", 1))
+	if (!ft_strncmp(src, "?", 1))
 		ft_functin_env(dap, err);
 }
 
@@ -75,7 +75,7 @@ void	expanding_function_heredoc(t_node *lst, t_env *my_env, t_ha *err)
 {
 	char	*dap;
 
-	err = helper_varia();
+	err = helper_varia(err->err_status);
 	dap = gc_malloc(sizeof(char) * (count_cmd(lst, my_env, err) + 1), 1);
 	if (!dap)
 		return ;

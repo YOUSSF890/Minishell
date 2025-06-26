@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_func4.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/09 21:02:18 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 21:50:00 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:25:06 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/22 23:21:51 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,16 +37,6 @@ void	ft_lstadd_back12(t_env **lst, t_env *new)
 	}
 }
 
-t_node	*ft_lstnew5(void)
-{
-	t_node	*new_node;
-
-	new_node = gc_malloc(sizeof(t_node), 1);
-	new_node->data = NULL;
-	new_node->next = NULL;
-	return (new_node);
-}
-
 void	ft_lstadd_back1(t_node **lst, t_node *new_node)
 {
 	t_node	*temp;
@@ -69,17 +59,19 @@ t_node	*ft_lstnew1(char *content, int type)
 	new_node = gc_malloc(sizeof(t_node), 1);
 	new_node->data = content;
 	new_node->type = type;
+	new_node->back_type = 0;
 	new_node->next = NULL;
 	return (new_node);
 }
 
-t_node	*ft_lstnew2(char *content, int type, char *tmp_file)
+t_node	*ft_lstnew2(char *content, int type, char *tmp_file, int heredoc_fd)
 {
 	t_node	*new_node;
 
 	new_node = gc_malloc(sizeof(t_node), 1);
-	new_node->data = md_strdup(content);
+	new_node->data = content;
 	new_node->type = type;
+	new_node->heredoc_fd = heredoc_fd;
 	new_node->tmp_file = tmp_file;
 	new_node->next = NULL;
 	return (new_node);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cc.c                                               :+:      :+:    :+:   */
+/*   dollar_handel.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/09 22:00:18 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/10 19:56:49 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:23:38 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/22 19:54:09 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	handle_dollar_quote_case_you(t_node *lst, t_ha *ha)
 {
+	ha->quote_count = 0;
 	if (lst->data[ha->read_index + 1] == '\'' && ha->dbl_qte % 2 == 0)
 		ha->quote_count = ha->snl_qte + 1;
 	else if (lst->data[ha->read_index + 1] == '\"' && ha->snl_qte % 2 == 0)
@@ -32,6 +33,8 @@ void	copy_to_dap_you(char *str, t_ha *ha)
 	int	i;
 
 	i = 0;
+	if (str == NULL)
+		return ;
 	while (str[i])
 	{
 		(ha->dest_index)++;
@@ -77,7 +80,7 @@ void	copy_env_value_you(t_node *lst, t_env *my_env, t_ha *ha, t_ha *err)
 			break ;
 		}
 	}
-	if (ft_strncmp1(src, "?", 1))
+	if (!ft_strncmp(src, "?", 1))
 		ft_functin_env_you(ha, err);
 }
 
@@ -85,11 +88,11 @@ int	count_cmd1(t_node *lst, t_env *my_env, t_ha *err)
 {
 	t_ha	*ha;
 
-	ha = helper_varia();
+	ha = helper_varia(err->err_status);
 	while (lst->data[ha->read_index])
 	{
 		conut_dabel_singel_qoutition(lst->data[ha->read_index], ha);
-		if (ft_Check_dollar(lst, ha))
+		if (check_dollar(lst, ha))
 			copy_env_value_you(lst, my_env, ha, err);
 		else
 		{

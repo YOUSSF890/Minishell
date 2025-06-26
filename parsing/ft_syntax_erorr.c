@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 12:10:26 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 22:14:17 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:22:17 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/18 11:22:19 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,13 +30,38 @@ int	tchik_pipe(t_list *lst)
 	return (0);
 }
 
-void	syntax_erorr(t_list *lst)
+void	ft_print_erorr(char *str1, char *str2, char *str3, char *str4)
+{
+	char	*str_print;
+
+	str_print = NULL;
+	str_print = md_strjoin(str_print, str1);
+	str_print = md_strjoin(str_print, str2);
+	str_print = md_strjoin(str_print, str3);
+	str_print = md_strjoin(str_print, str4);
+	write(2, str_print, md_strlen(str_print));
+}
+
+void	ft_print_erorr2(char *str1, char str, char *str3)
+{
+	char	*str_print;
+	char	str2[2];
+
+	str2[0] = str;
+	str2[1] = '\0';
+	str_print = NULL;
+	str_print = md_strjoin(str_print, str1);
+	str_print = md_strjoin(str_print, str2);
+	str_print = md_strjoin(str_print, str3);
+	write(2, str_print, md_strlen(str_print));
+}
+
+int	syntax_erorr(t_list *lst)
 {
 	if (tchik_pipe(lst))
 	{
-		printf("bash: syntax error `%c'\n", lst->content[0]);
-		gc_malloc(0, 0);
-		exit(1);
+		ft_print_erorr2("bash: syntax error `", lst->content[0], "'\n");
+		return (0);
 	}
 	else
 	{
@@ -45,16 +70,15 @@ void	syntax_erorr(t_list *lst)
 			if ((lst->content[0] == '<' || lst->content[0] == '>')
 				&& (lst->next->content[0] == '|' || lst->next->content[0] == '<'
 					|| lst->next->content[0] == '>'))
-				return (printf("bash: syntax error `%s'\n",
-						lst->next->content), gc_malloc(0, 0), exit(1));
+				return (ft_print_erorr("bash: syntax error `",
+						lst->next->content, "'\n", NULL), 0);
 			else if ((lst->content[0] == '|') && (lst->next->content[0] == '|'))
-				return (printf("bash: syntax error `|'\n"),
-					gc_malloc(0, 0), exit(1));
+				return (write(2, "bash: syntax error `|'\n", 23), 0);
 			lst = lst->next;
 			if (lst->next == NULL && (lst->content[0] == '|'
 					|| lst->content[0] == '<' || lst->content[0] == '>'))
-				return (printf("bash: syntax error `newline'\n"),
-					gc_malloc(0, 0), exit(1));
+				return (write(2, "bash: syntax error `newline'\n", 29), 0);
 		}
 	}
+	return (1);
 }

@@ -6,11 +6,23 @@
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:26:39 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/10 10:04:28 by mradouan         ###   ########.fr       */
+/*   Updated: 2025/06/25 18:11:36 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+
+void	get_close(void)
+{
+	int	i;
+
+	i = 4;
+	while (i < OPEN_MAX)
+	{
+		close(i);
+		i++;
+	}
+}
 
 char	**fetch_path(t_env *my_env)
 {

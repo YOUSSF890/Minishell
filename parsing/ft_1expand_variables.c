@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 12:51:43 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/10 20:39:52 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:23:28 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/21 17:57:11 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,31 +28,31 @@ void	store_dap(char *dap, char *str, t_ha *ha, int *i)
 		dap[(ha->dest_index)++] = str[(*i)++];
 }
 
-void	copy_to_dap(char *dap, char *str, t_ha *ha, t_node *lst)
+void	copy_to_dap(char *dap, char *str, t_ha *ha)
 {
 	int	i;
 	int	m;
 
 	i = 0;
 	m = ft_strlen(ha->dest_index, dap);
-	while (str[i])
+	if (str)
 	{
-		if (m % 2 == 0)
+		while (str[i])
 		{
-			if (lst->type == 1 || lst->type == 2 || lst->type == 4)
-				lst->type = 1337;
-			while (str[i] == ' ')
-				i++;
-			if (str[i] != ' ')
+			if (m % 2 == 0)
 			{
-				if (i > 0 && str[i - 1] == ' ' && dap[0] != '\0')
-					dap[(ha->dest_index)++] = str[i - 1];
-				store_dap(dap, str, ha, &i);
+				while (str[i] == ' ' || str[i] == '\t')
+					i++;
+				if ((str[i] != ' ' || str[i] != '\t') && str[i])
+				{
+					if (i > 0 && (str[i - 1] == ' ' || str[i - 1] == '\t')
+						&& dap[0] != '\0')
+						dap[(ha->dest_index)++] = str[i - 1];
+					store_dap(dap, str, ha, &i);
+				}
 			}
-		}
-		else
-		{
-			store_dap(dap, str, ha, &i);
+			else
+				store_dap(dap, str, ha, &i);
 		}
 	}
 }
@@ -62,7 +62,7 @@ void	store_str_src(t_ha *ha, char *str, char *src)
 	int		dest_index;
 
 	dest_index = 0;
-	while (ft_Check_after_dollar(str[ha->read_index]))
+	while (check_after_dollar(str[ha->read_index]))
 	{
 		src[dest_index++] = str[(ha->read_index)++];
 		if (((str[ha->read_index - 1] >= 48 && str[ha->read_index - 1] <= 57)
@@ -81,7 +81,7 @@ char	*env_key(t_ha *ha, char *str)
 
 	len_key = 0;
 	cpy_index = ha->read_index;
-	while (ft_Check_after_dollar(str[cpy_index]))
+	while (check_after_dollar(str[cpy_index]))
 	{
 		len_key++;
 		if (str[cpy_index - 1] == '$' && ((str[cpy_index] >= 48
@@ -114,10 +114,11 @@ void	copy_env_value(t_node *lst, t_env *my_env, char *dap, t_ha *ha)
 			my_env = my_env->next;
 		else
 		{
-			copy_to_dap(dap, my_env->value, ha, lst);
+			copy_to_dap(dap, my_env->value, ha);
 			break ;
 		}
 	}
-	if (ft_strncmp1(src, "?", 1))
+	check_ambegous(lst, my_env);
+	if (!ft_strncmp(src, "?", 1))
 		ft_functin_env(dap, ha);
 }

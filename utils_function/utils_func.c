@@ -3,28 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   utils_func.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/13 10:42:55 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/03 11:19:25 by mradouan         ###   ########.fr       */
+/*   Created: 2025/06/18 11:25:31 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/18 18:34:58 by ylagzoul         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
-int	ft_strncmp1(const char *s1, const char *s2, size_t n)
-{
-	size_t	i;
-
-	i = 0;
-	while (i < n && (s1[i] || s2[i]))
-	{
-		if (s1[i] != s2[i])
-			return (0);
-		i++;
-	}
-	return (1);
-}
 
 int	ft_strncmp(const char *s1, const char *s2, size_t n)
 {
@@ -49,8 +35,6 @@ char	*md_strdup(char *src)
 	if (!src)
 		return (NULL);
 	str = gc_malloc(md_strlen(src) + 1, 1);
-	if (!str)
-		return (NULL);
 	while (src[i])
 	{
 		str[i] = src[i];
@@ -88,10 +72,11 @@ char	*md_strjoin(char *s1, char *s2)
 	return (str);
 }
 
-char *move_node(t_node *nodes)
+char	*move_node(t_node *nodes)
 {
-	t_node *tmp = nodes;
-	
+	t_node	*tmp;
+
+	tmp = nodes;
 	while (tmp->next)
 		tmp = tmp->next;
 	return (tmp->data);

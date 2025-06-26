@@ -1,39 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_printf.c                                        :+:      :+:    :+:   */
+/*   main_work_of_exec2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/11/27 11:58:14 by mradouan          #+#    #+#             */
-/*   Updated: 2025/06/04 16:31:53 by mradouan         ###   ########.fr       */
+/*   Created: 2025/06/13 12:27:42 by mradouan          #+#    #+#             */
+/*   Updated: 2025/06/21 20:32:23 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	ft_printf(const char *format, ...)
+int	set_md(t_md **md, t_node *nodes, t_env *my_env, t_ha *err)
 {
-	va_list		args;
-	int			count;
-	int			i;
+	*md = gc_malloc(sizeof(t_md), 1);
+	(*md)->prev_fd = -1;
+	(*md)->is_entred = 0;
+	(*md)->i = 0;
+	(*md)->pid = 0;
+	if (spliting_nodes_hd(*md, nodes, my_env, err) == -333)
+		return (-333);
+	return (0);
+}
 
-	va_start(args, format);
-	i = 0;
-	count = 0;
-	while (format[i])
+void	helper_built(t_md *md, t_ha *err)
+{
+	md->cmd2 = loop_through_node_cmd(md->groups[md->i]);
+	if (!md->cmd2)
 	{
-		if (format[i] == '%')
-		{
-			i++;
-			if (format[i] == '\0')
-				break ;
-			count += mix_printer(format[i], args);
-		}
-		else
-			count += ft_putchar(format[i]);
-		i++;
+		close(err->saved_fd);
+		gc_malloc(0, 0);
+		exit(127);
 	}
-	va_end(args);
-	return (count);
 }

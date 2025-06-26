@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   yl_utils_func.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 11:21:49 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/01 21:48:21 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:25:00 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/22 23:22:42 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ size_t	yl_strlen(char *s, int *i)
 	size_t	a;
 
 	a = 0;
+	if (!*s)
+		return (0);
 	while (s[*i])
 	{
 		(*i)++;

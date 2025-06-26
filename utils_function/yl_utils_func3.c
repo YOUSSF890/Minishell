@@ -3,52 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   yl_utils_func3.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ylagzoul <ylagzoul@student.42.fr>          +#+  +:+       +#+        */
+/*   By: mradouan <mradouan@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/05/17 11:47:14 by ylagzoul          #+#    #+#             */
-/*   Updated: 2025/06/10 20:43:27 by ylagzoul         ###   ########.fr       */
+/*   Created: 2025/06/18 11:24:48 by ylagzoul          #+#    #+#             */
+/*   Updated: 2025/06/22 23:23:16 by mradouan         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	conut_dabel_singel_qoutition(char c, t_ha	*ha)
-{
-	if (c == '\'' && ha->dbl_qte % 2 == 0)
-		(ha->snl_qte)++;
-	else if (c == '\"' && ha->snl_qte % 2 == 0)
-		(ha->dbl_qte)++;
-}
-
-t_ha	*helper_varia(t_ha *ha)
-{
-	t_ha	*new_node;
-
-	new_node = gc_malloc(sizeof(t_ha), 1);
-	new_node->dest_index = 0;
-	new_node->err_status = ha->err_status;
-	new_node->read_index = 0;
-	new_node->quote_count = 0;
-	new_node->snl_qte = 0;
-	new_node->dbl_qte = 0;
-	new_node->next = NULL;
-	return (new_node);
-}
-
-t_handel	*helper_variables(void)
-{
-	t_handel	*new_node;
-
-	new_node = gc_malloc(sizeof(t_handel), 1);
-	new_node->t = 0;
-	new_node->a = 0;
-	new_node->q = 1;
-	new_node->quote_count = 1;
-	new_node->next = NULL;
-	return (new_node);
-}
-
-int ft_Check_key(char c)
+int	check_key(char c)
 {
 	if (c >= 97 && c <= 122)
 		return (1);
@@ -77,7 +41,9 @@ int	key_check(char *str)
 		else if (str[i] == 95)
 			i++;
 		else
+		{
 			return (0);
+		}
 	}
 	return (1);
 }
@@ -88,58 +54,34 @@ char	*ft_cpy_key(int i, t_node *nodes)
 	int		a;
 
 	a = 0;
-	str = gc_malloc(count_key(i, nodes) + 1, 1);//count_key(i, nodes) + 1
-	if(nodes->data[0] >= '0' && nodes->data[0] <= '9')
+	str = gc_malloc(count_key(i, nodes) + 1, 1);
+	if ((nodes->data[0] >= '0' && nodes->data[0] <= '9')
+		|| (nodes->data[0] == '+' || nodes->data[0] == '='))
 	{
-		printf("eroor ft_cpy_key\n");
-		gc_malloc(0, 0);
-		exit(1);
+		return (NULL);
 	}
-	while (nodes->data[i] != '+' && nodes->data[i] != '=' && nodes->data[i]) //ft_Check_key(nodes->data[i])
+	while (nodes->data[i] != '+' && nodes->data[i] != '=' && nodes->data[i])
 	{
 		str[a++] = nodes->data[(i)++];
 	}
 	str[a] = '\0';
 	if (!key_check(str))
 	{
-		printf("export: `%s': not a valid identifier\n", nodes->data);
-		// gc_malloc(0, 0);
-		// exit(1);
+		return (NULL);
 	}
 	return (str);
 }
 
-char	*ft_copy_add_dabel_qoutes(char *str)
-{
-	char	*copy;
-	int		read_index;
-	int		dest_index;
-
-	read_index = 0;
-	dest_index = 0;
-	copy = gc_malloc(md_strlen(str) + 3, 1);
-	copy[dest_index++] = '\"';
-	while (str[read_index])
-	{
-		copy[dest_index++] = str[read_index++];
-	}
-	copy[dest_index++] = '\"';
-	copy[dest_index] = '\0';
-	return (copy);
-}
-
-char	*ft_cpy_value(int *i, t_node *nodes, t_env *my_env)
+char	*ft_cpy_value(int *i, t_node *nodes, t_env *my_env, t_ha *err)
 {
 	char	*str;
 
 	str = gc_malloc(count_value(*i, nodes, my_env) + 2, 1);
-	while (ft_Check_key(nodes->data[*i]))
+	while (check_key(nodes->data[*i]))
 		(*i)++;
 	if (nodes->data[*i] == '+' && nodes->data[(*i) + 1] != '=')
-	{
-		printf("mhd: export: `%s': not a valid identifier\n", nodes->data);
-		return (NULL);
-	}
+		return (err->err_status = 1, ft_print_erorr("bash: export: `",
+				nodes->data, "': not a valid identifier\n", NULL), NULL);
 	if (nodes->data[*i] == '+' && nodes->data[(*i) + 1] == '=')
 	{
 		*i = *i + 2;
@@ -155,6 +97,31 @@ char	*ft_cpy_value(int *i, t_node *nodes, t_env *my_env)
 		yl_strlen(nodes->data, i);
 	}
 	else
-		my_env->type = 0;
+		return (my_env->type = 0, NULL);
+	return (str);
+}
+
+char	*ft_cpy_value13(int *i, t_node *nodes, t_env *my_env, t_ha *err)
+{
+	char	*str;
+
+	str = gc_malloc(count_value13(*i, nodes) + 2, 1);
+	while (check_key(nodes->data[*i]))
+		(*i)++;
+	if (nodes->data[*i] == '+' && nodes->data[(*i) + 1] != '=')
+		return (err->err_status = 1, ft_print_erorr("bash: export: `",
+				nodes->data, "': not a valid identifier\n", NULL), NULL);
+	if (nodes->data[*i] == '='
+		|| (nodes->data[*i] == '+' && nodes->data[(*i) + 1] == '='))
+	{
+		if (nodes->data[*i] == '+' && nodes->data[*i + 1] == '=')
+			(*i)++;
+		(*i)++;
+		my_env->type = 1;
+		str = yl_strcpy(str, nodes->data + (*i));
+		yl_strlen(nodes->data, i);
+	}
+	else
+		return (my_env->type = 0, NULL);
 	return (str);
 }
